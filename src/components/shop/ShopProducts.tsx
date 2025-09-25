@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { LayoutGrid, Rows3 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ProductCard from "../products/ProductCard";
 
@@ -9,13 +10,39 @@ import SortShop from "./SortShop";
 import ShopResponsiveBar from "./ShopResponsiveBar";
 import ShopPagination from "./ShopPagination";
 import { TProducts } from "@/src/types";
+import { getAllFilterProducts } from "@/src/services/products";
 
 interface productProps {
-  products:TProducts[]
+  products:TProducts[],
+  category:string
+  brand:string
+  colors:string
 }
 
-const ShopProducts:React.FC<productProps> = ({products}) => {
+const ShopProducts:React.FC<productProps> = ({products,category,brand,colors}) => {
   const [viewType, setViewType] = useState<"grid" | "row">("grid");
+   const [allProducts, setAllProducts] = useState<TProducts[]>(products);
+
+   useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const filters: any = {};
+      if (category) filters.category = category;
+      if (brand) filters.brand = brand;
+     if (colors) filters.colors = colors;
+
+      const res = await getAllFilterProducts(filters);
+      setAllProducts(res.data); // ✅ only filtered products
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  };
+
+  fetchProducts();
+}, [category,brand,colors]);
+
+
+  console.log("filter products",allProducts)
 
   return (
     <div>
@@ -53,13 +80,13 @@ const ShopProducts:React.FC<productProps> = ({products}) => {
 
       {viewType === "grid" ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-2 mt-4">
-          {products?.map((product) => (
+          {allProducts?.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>
       ) : (
         <div className="flex flex-col gap-2 mt-4">
-          {products?.map((product) => (
+          {allProducts?.map((product) => (
             // <RowProductCard key={product.id} product={product} />
             <RowProductCard key={product._id} />
           ))}

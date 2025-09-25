@@ -20,9 +20,48 @@ export const getAllProducts = async (params: Record<string, any> = {}) => {
 
   return res.json();
 };
-export const getAllFilterProducts = async () => {
-  
-  const res = await fetch(`${apiBaseUrl}/product/pagination`);
+
+
+
+
+export const getAllFilterProducts = async (filters: {
+  category?: string;
+  brand?: string;
+  size?: string;
+   colors?: string;
+} = {}) => {
+  const searchParams = new URLSearchParams();
+
+  if (filters.category) {
+    filters.category.split(",").forEach((cat) => {
+      searchParams.append("category", cat);
+    });
+  }
+
+  if (filters.brand) {
+    filters.brand.split(",").forEach((brand) => {
+      searchParams.append("brand", brand);
+    });
+  }
+
+  if (filters.size) {
+    filters.size.split(",").forEach((size) => {
+      searchParams.append("size", size);
+    });
+  }
+
+   if (filters.colors) {
+    filters.colors.split(",").forEach((colors) => {
+      searchParams.append("colors", colors); // ✅ use "colors" (plural) to match your API
+    });
+  }
+
+ 
+
+  const url = `${apiBaseUrl}/product/pagination?${searchParams.toString()}`;
+  console.log("params", url);
+
+  const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
     throw new Error("Failed to fetch products");
@@ -30,6 +69,7 @@ export const getAllFilterProducts = async () => {
 
   return res.json();
 };
+
 
 export const getAllNewProducts = async () =>{
  const res = await fetch(`${apiBaseUrl}/product/new-arrivals?limit=6`);
