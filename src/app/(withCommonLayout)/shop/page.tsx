@@ -1,3 +1,4 @@
+import ShopPagination from "@/src/components/shop/ShopPagination";
 import ShopProducts from "@/src/components/shop/ShopProducts";
 import ShopSideBar from "@/src/components/shop/ShopSideBar";
 import { getAllBrands } from "@/src/services/brand";
@@ -11,9 +12,9 @@ import React from "react";
 const Page = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const params = await searchParams;
+  const params = await Promise.resolve(searchParams);
 
   const normalizeParam = (param: string | string[] | undefined) =>
     Array.isArray(param) ? param.join(",") : param || "";
@@ -21,10 +22,28 @@ const Page = async ({
   const category = normalizeParam(params.category);
   const brand = normalizeParam(params.brand);
   const colors = normalizeParam(params.colors);
+  const size = normalizeParam(params.size);
+  const sortBy = normalizeParam(params.sortBy);
 
-  
+  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
+  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
-  const { data: products } = await getAllFilterProducts({ category, brand, colors }); 
+  // ✅ Default page = 1, limit = 6
+  const page = params.page ? Number(params.page) : 1;
+  const limit = params.limit ? Number(params.limit) : 6;
+
+  const { data: products, meta } = await getAllFilterProducts({
+    category,
+    brand,
+    colors,
+    size,
+    minPrice,
+    maxPrice,
+    sortBy,
+    page,
+    limit,
+  });
+
   const { data: categories } = await getAllCategories();
   const { data: brands } = await getAllBrands();
   const { data: colores } = await getAllColors();
@@ -37,12 +56,39 @@ const Page = async ({
         <div className="flex xl:gap-8 gap-4">
           {/* Sidebar */}
           <div className="w-1/4 hidden lg:block">
-            <ShopSideBar categories={categories} brands={brands} colors={colores} sizes={sizes} />
+            <ShopSideBar
+              categories={categories}
+              brands={brands}
+              colors={colores}
+              sizes={sizes}
+              products={products}
+            />
           </div>
 
           {/* Products */}
           <div className="lg:w-3/4 w-full">
-            <ShopProducts products={products} category={category} brand={brand} colors={colors}/>
+            <ShopProducts
+              products={products}
+              category={category}
+              brand={brand}
+              colors={colors}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              sortBy={sortBy}
+              page={page}
+  limit={limit}
+            />
+
+           <div>
+             {/* ✅ Pagination */}
+            <ShopPagination
+              page={page}
+              limit={limit}
+              total={meta?.total || 0}
+            />
+           </div>
+
+           
           </div>
         </div>
       </div>

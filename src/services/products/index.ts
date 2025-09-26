@@ -28,7 +28,12 @@ export const getAllFilterProducts = async (filters: {
   category?: string;
   brand?: string;
   size?: string;
-   colors?: string;
+  colors?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: string;
+  page?: number;
+  limit?: number;
 } = {}) => {
   const searchParams = new URLSearchParams();
 
@@ -52,9 +57,24 @@ export const getAllFilterProducts = async (filters: {
 
    if (filters.colors) {
     filters.colors.split(",").forEach((colors) => {
-      searchParams.append("colors", colors); // ✅ use "colors" (plural) to match your API
+      searchParams.append("colors", colors);
     });
   }
+
+
+  if (filters.minPrice !== undefined) {
+    searchParams.append("minPrice", String(filters.minPrice));
+  }
+  if (filters.maxPrice !== undefined) {
+    searchParams.append("maxPrice", String(filters.maxPrice));
+  }
+
+   if (filters.sortBy) {
+    searchParams.append("sortBy", filters.sortBy); // ✅ added
+  }
+
+  if (filters.page) searchParams.append("page", String(filters.page));
+  if (filters.limit) searchParams.append("limit", String(filters.limit));
 
  
 

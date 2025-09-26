@@ -22,6 +22,14 @@ export type TColor = {
   slug: string
   __v: number
 }
+export type TSize = {
+  _id: string
+  title: string
+  createdAt: string
+  updatedAt: string
+  slug: string
+  __v: number
+}
 
 export type TBrand = {
   _id: string
