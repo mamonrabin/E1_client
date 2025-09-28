@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -6,6 +7,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ForgetPassword from "./ForgetPassword";
 import { Eye, EyeOff } from "lucide-react"; // Eye icons
+import { login } from "../services/auth";
 
 interface SingInFormData {
   email: string;
@@ -26,14 +28,23 @@ const SingInForm = () => {
 
   const onSubmit: SubmitHandler<SingInFormData> = async (data) => {
     setLoading(true);
-    console.log("Form Data:", data);
+    try {
+      const result = await login(data); // ✅ use service function
 
-    setTimeout(() => {
+      if (result?.accessToken) {
+        localStorage.setItem("accessToken", result.accessToken);
+        toast.success("login successful!");
+        router.push("/"); // redirect home
+      } else {
+        toast.error(result?.message || "No token received");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "login failed");
+    } finally {
       setLoading(false);
-      toast.success("Login successful!");
-      router.push("/");
       reset();
-    }, 2000);
+    }
   };
 
   return (

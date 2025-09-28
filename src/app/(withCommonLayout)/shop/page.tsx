@@ -29,10 +29,11 @@ const Page = async ({
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
   // ✅ Default page = 1, limit = 6
-  const page = params.page ? Number(params.page) : 1;
-  const limit = params.limit ? Number(params.limit) : 6;
 
-  const { data: products, meta } = await getAllFilterProducts({
+  const page = params.page ? Number(params.page) : 1;
+const limit = params.limit ? Number(params.limit) : 6;
+
+  const { data: products } = await getAllFilterProducts({
     category,
     brand,
     colors,
@@ -44,10 +45,15 @@ const Page = async ({
     limit,
   });
 
+  console.log("meta",products.data)
+
   const { data: categories } = await getAllCategories();
   const { data: brands } = await getAllBrands();
   const { data: colores } = await getAllColors();
   const { data: sizes } = await getAllSize();
+
+  // ✅ fallback if meta.total is missing
+  const total = products.meta?.total ?? products.data.length;
 
   return (
     <div>
@@ -61,14 +67,14 @@ const Page = async ({
               brands={brands}
               colors={colores}
               sizes={sizes}
-              products={products}
+              products={products.data}
             />
           </div>
 
           {/* Products */}
           <div className="lg:w-3/4 w-full">
             <ShopProducts
-              products={products}
+              products={products.data}
               category={category}
               brand={brand}
               colors={colors}
@@ -76,19 +82,13 @@ const Page = async ({
               maxPrice={maxPrice}
               sortBy={sortBy}
               page={page}
-  limit={limit}
-            />
-
-           <div>
-             {/* ✅ Pagination */}
-            <ShopPagination
-              page={page}
               limit={limit}
-              total={meta?.total || 0}
             />
-           </div>
 
-           
+            <div>
+              {/* ✅ Pagination */}
+              <ShopPagination page={page} limit={limit} total={total} />
+            </div>
           </div>
         </div>
       </div>
@@ -97,6 +97,3 @@ const Page = async ({
 };
 
 export default Page;
-
-
-

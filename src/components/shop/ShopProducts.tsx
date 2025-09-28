@@ -9,6 +9,7 @@ import SortShop from "./SortShop";
 import ShopResponsiveBar from "./ShopResponsiveBar";
 import { TProducts } from "@/src/types";
 import { getAllFilterProducts } from "@/src/services/products";
+import { h2 } from "framer-motion/client";
 
 interface ProductProps {
   products: TProducts[];
@@ -36,6 +37,8 @@ const ShopProducts: React.FC<ProductProps> = ({
   const [viewType, setViewType] = useState<"grid" | "row">("grid");
   const [allProducts, setAllProducts] = useState<TProducts[]>(products);
 
+  console.log("all products bbbbbbbbbbbbbbbbbbbbbb",allProducts)
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -46,11 +49,11 @@ const ShopProducts: React.FC<ProductProps> = ({
         if (minPrice) filters.minPrice = minPrice;
         if (maxPrice) filters.maxPrice = maxPrice;
         if (sortBy) filters.sortBy = sortBy;
-        if (page) filters.page = page;     // ✅ include
-        if (limit) filters.limit = limit;  // ✅ include
+        if (page) filters.page = page;  
+        if (limit) filters.limit = limit;
 
         const res = await getAllFilterProducts(filters);
-        setAllProducts(res.data);
+        setAllProducts(res?.data?.data);
       } catch (err) {
         console.error("Error fetching products:", err);
       }
@@ -106,7 +109,8 @@ const ShopProducts: React.FC<ProductProps> = ({
       ) : (
         <div className="flex flex-col gap-2 mt-4">
           {allProducts?.map((product) => (
-            <RowProductCard key={product._id} product={product} />
+            // <RowProductCard key={product._id} product={product} />
+            <h2 key={product._id}>hi</h2>
           ))}
         </div>
       )}

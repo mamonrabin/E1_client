@@ -34,6 +34,7 @@ export const getAllFilterProducts = async (filters: {
   sortBy?: string;
   page?: number;
   limit?: number;
+  searchTerm?: string;
 } = {}) => {
   const searchParams = new URLSearchParams();
 
@@ -76,7 +77,9 @@ export const getAllFilterProducts = async (filters: {
   if (filters.page) searchParams.append("page", String(filters.page));
   if (filters.limit) searchParams.append("limit", String(filters.limit));
 
- 
+ if (filters.searchTerm) {
+    searchParams.append("searchTerm", filters.searchTerm); // 🔹 Added here
+  }
 
   const url = `${apiBaseUrl}/product/pagination?${searchParams.toString()}`;
   console.log("params", url);

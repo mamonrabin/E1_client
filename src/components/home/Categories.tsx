@@ -6,18 +6,25 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 import Image from "next/image";
-import { categoresiList } from "@/src/api/categoryApi";
+import { useRouter } from "next/navigation";
+
 import { TCategory } from "@/src/types";
 import React from "react";
 import { apiBaseUrl } from "@/src/config/config";
 
-interface categoriesProps {
-  categories:TCategory[]
+interface CategoriesProps {
+  categories: TCategory[];
 }
 
-const Categories:React.FC<categoriesProps> = ({categories}) => {
+const Categories: React.FC<CategoriesProps> = ({ categories }) => {
+  const router = useRouter();
+
+  const handleCategoryClick = (categoryId: string) => {
+    router.push(`/shop?category=${categoryId}`);
+  };
+
   return (
-    <div className="py-2 cursor-grab">
+    <div className="py-2 cursor-grab relative">
       <Swiper
         spaceBetween={8}
         slidesPerView={2}
@@ -35,21 +42,27 @@ const Categories:React.FC<categoriesProps> = ({categories}) => {
         speed={1000}
       >
         {categories.map((category) => (
-          <SwiperSlide key={category._id} className="overflow-hidden">
-            <Image
-              src={apiBaseUrl + category.image}
-              alt=""
-              width={500}
-              height={500}
-              className="relative hover:scale-105 duration-1000 transition-all overflow-hidden"
-            />
-            <div className="bottom-5 absolute px-2 w-full ">
-              <button className="group cursor-pointer relative w-full py-3 text-center uppercase font-medium text-white  bg-white/30 overflow-hidden">
-                <span className="relative z-10">{category.title}</span>
+          <SwiperSlide key={category._id} className="overflow-hidden relative">
+            <div
+              className="relative cursor-pointer"
+              onClick={() => handleCategoryClick(category._id)}
+            >
+              <Image
+                src={apiBaseUrl + category.image}
+                alt={category.title}
+                width={500}
+                height={500}
+                className="relative hover:scale-105 duration-1000 transition-all overflow-hidden"
+              />
 
-                {/* Black overlay */}
-                <span className="absolute inset-0 bg-black transform -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-0" />
-              </button>
+              <div className="bottom-5 absolute px-2 w-full">
+                <button className="group cursor-pointer relative w-full py-3 text-center uppercase font-medium text-white bg-white/30 overflow-hidden">
+                  <span className="relative z-10">{category.title}</span>
+
+                  {/* Black overlay */}
+                  <span className="absolute inset-0 bg-black transform -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-0" />
+                </button>
+              </div>
             </div>
           </SwiperSlide>
         ))}

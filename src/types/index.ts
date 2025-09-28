@@ -97,6 +97,19 @@ export type TBlogs = {
   __v: number
 }
 
+export type TUser = {
+  _id: string
+  name: string
+  email: string
+  password: string
+  phone: string
+  role: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
 
 
 

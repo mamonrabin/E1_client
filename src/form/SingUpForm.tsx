@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Eye, EyeOff } from "lucide-react"; // Eye icons
+import { Eye, EyeOff } from "lucide-react";
+import { signUp } from "@/src/services/auth";
 
-interface SingInFormData {
+interface SignUpFormData {
   email: string;
   password: string;
   phone: string;
+  name: string;
 }
 
 const SingUpForm = () => {
@@ -18,22 +21,31 @@ const SingUpForm = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<SingInFormData>();
+  } = useForm<SignUpFormData>();
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<SingInFormData> = async (data) => {
+  const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     setLoading(true);
-    console.log("Form Data:", data);
+    try {
+      const result = await signUp(data); // ✅ use service function
 
-    setTimeout(() => {
+      if (result?.accessToken) {
+        localStorage.setItem("accessToken", result.accessToken);
+        toast.success("Signup successful!");
+        router.push("/"); // redirect home
+      } else {
+        toast.error(result?.message || "No token received");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Signup failed");
+    } finally {
       setLoading(false);
-      toast.success("Login successful!");
-      router.push("/");
       reset();
-    }, 2000);
+    }
   };
 
   return (
@@ -41,27 +53,30 @@ const SingUpForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="py-4 flex flex-col gap-2 px-12"
     >
-      {/* Email Input */}
+      <input
+        {...register("name", { required: true })}
+        className="px-2 py-3 border border-primary/20 outline-none"
+        type="text"
+        placeholder="Name"
+      />
+      {errors.name && <span className="text-red-500">name is required</span>}
+
       <input
         {...register("email", { required: true })}
         className="px-2 py-3 border border-primary/20 outline-none"
-        type="text"
+        type="email"
         placeholder="Email"
       />
-      {errors.email && (
-        <span className="text-red-500 capitalize">email is required</span>
-      )}
+      {errors.email && <span className="text-red-500">email is required</span>}
+
       <input
         {...register("phone", { required: true })}
         className="px-2 py-3 border border-primary/20 outline-none"
         type="text"
         placeholder="Phone Number"
       />
-      {errors.phone && (
-        <span className="text-red-500 capitalize">phone is required</span>
-      )}
+      {errors.phone && <span className="text-red-500">phone is required</span>}
 
-      {/* Password Input with Eye Icon */}
       <div className="relative">
         <input
           {...register("password", { required: true })}
@@ -78,30 +93,25 @@ const SingUpForm = () => {
         </button>
       </div>
       {errors.password && (
-        <span className="text-red-500 capitalize">password is required</span>
+        <span className="text-red-500">password is required</span>
       )}
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={loading}
         className="px-2 py-3 bg-primary text-white cursor-pointer hover:bg-secondary duration-300 font-medium transition-all outline-none"
       >
-        {loading && <span className="animate-spin rounded-full"></span>}
         {loading ? "sign up..." : "Sign Up"}
       </button>
 
-      {/* Links */}
-      <div>
-        <p className="text-center py-4 text-[#474646]">
-          If you have already account ?{" "}
-          <Link href="/signIn">
-            <span className="font-medium text-primary cursor-pointer capitalize hover:text-secondary duration-300">
-              Sign in
-            </span>
-          </Link>
-        </p>
-      </div>
+      <p className="text-center py-4 text-[#474646]">
+        Already have an account?{" "}
+        <Link href="/signIn">
+          <span className="font-medium text-primary cursor-pointer capitalize hover:text-secondary duration-300">
+            Sign in
+          </span>
+        </Link>
+      </p>
     </form>
   );
 };
