@@ -10,6 +10,7 @@ import {
 import { FaRegUser } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { TUser } from '../types';
+import Link from 'next/link';
 
 interface UserProps {
     user:TUser
@@ -39,7 +40,9 @@ const UserDropdown:React.FC<UserProps> = ({user}) => {
             </p>
   </DropdownMenuTrigger>
   <DropdownMenuContent className='mt-4 rounded-[1px]'>
-    <DropdownMenuItem className='cursor-pointer'>My Account</DropdownMenuItem>
+    <DropdownMenuItem className='cursor-pointer'>
+      <Link href="/profile">My Account</Link>
+    </DropdownMenuItem>
     <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>Log out</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>

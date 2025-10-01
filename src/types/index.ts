@@ -109,6 +109,11 @@ export type TUser = {
   updatedAt: string
   __v: number
 }
+export type TCart = {
+ userRef: string;   
+  productRef: string; 
+  quantity: number;
+}
 
 
 

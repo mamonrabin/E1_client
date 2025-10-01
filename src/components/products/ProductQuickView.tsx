@@ -1,6 +1,6 @@
 
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import { Clock4, Search, Truck } from "lucide-react";
@@ -28,34 +28,8 @@ const ProductQuickView: React.FC<CardProps> = ({ product }) => {
     colors,
   } = product;
 
-  // Group colors by colorName
-  // const groupedColors: Record<
-  //   string,
-  //   { colorCode: string; sizes: { _id: string; title: string }[] }
-  // > = {};
-
-  // colors?.forEach((c) => {
-  //   if (!groupedColors[c.colorName]) {
-  //     groupedColors[c.colorName] = { colorCode: c.colorCode, sizes: [] };
-  //   }
-  //   groupedColors[c.colorName].sizes.push(c.size);
-  // });
-
-  // const colorNames = Object.keys(groupedColors);
-  // const [selectedColor, setSelectedColor] = useState<string>(colorNames[0]);
-
-  // Track selected size
-  // const [selectedSize, setSelectedSize] = useState<string>(
-  //   groupedColors[selectedColor]?.sizes[0]?._id || ""
-  // );
-
- 
-  // useEffect(() => {
-  //   if (groupedColors[selectedColor]?.sizes?.length > 0) {
-  //     setSelectedSize(groupedColors[selectedColor].sizes[0]._id);
-  //   }
-  // }, [selectedColor]);
-
+ const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
   return (
     <Dialog>
       <DialogTrigger>
@@ -104,9 +78,18 @@ const ProductQuickView: React.FC<CardProps> = ({ product }) => {
             </p>
 
             {/* Colors */}
-            <ColorOrSizeFunction colors={colors}/>
+            <ColorOrSizeFunction colors={colors}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+        selectedSize={selectedSize}
+        setSelectedSize={setSelectedSize}/>
 
-            <AddBtn counterMainStyle="mt-6" />
+            <AddBtn 
+           
+        selectedColor={selectedColor}
+        selectedSize={selectedSize}
+            product={product}
+            counterMainStyle="mt-6" counterStyle="py-2 md:w-[45%] w-[30%]" />
 
             <Link href="/checkout" className="w-full">
               <div className="hover:bg-primary border border-primary duration-300 cursor-pointer text-primary hover:text-white text-center py-2.5 mt-2">

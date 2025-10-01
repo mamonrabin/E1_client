@@ -1,49 +1,89 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { Minus, Plus } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useCartStore } from "../store/cartStore";
 
 interface AddBtnProps {
+  product?: any;
   counterBtn?: boolean;
   addcartBtn?: boolean;
   counterStyle?: string;
   counterMainStyle?: string;
+  selectedColor?: string;
+  selectedSize?: string;
+  Quantity?: number;
 }
 
 const AddBtn: React.FC<AddBtnProps> = ({
+  product,
   counterBtn = true,
   addcartBtn = true,
   counterStyle,
   counterMainStyle,
+  selectedColor,
+  selectedSize,
+  Quantity,
 }) => {
-  const [count, setCount] = useState(1);
+  const { addToCart, updateQuantity } = useCartStore();
+
+  const [count, setCount] = useState<number>(Quantity && Quantity > 0 ? Quantity : 1);
+
+  useEffect(() => {
+    if (Quantity && Quantity > 0) {
+      setCount(Quantity);
+    }
+  }, [Quantity]);
+
+  console.log()
+
   const handleIncrement = () => {
-    setCount((prev) => prev + 1);
-  };
+  const newCount = count + 1;
+  setCount(newCount);
+  updateQuantity(product?._id, newCount); // ✅ only productId + qty
+};
 
   const handleDecrement = () => {
-    setCount((prev) => (prev > 0 ? prev - 1 : 0));
-  };
+  const newCount = count > 1 ? count - 1 : 1;
+  setCount(newCount);
+  updateQuantity(product?._id, newCount); // ✅
+};
 
   const [isCartLoading, setIsCartLoading] = useState(false);
 
   const handleAddToCart = () => {
+    if (!selectedColor || !selectedSize) {
+      toast.error("Please select a color and size before adding to cart.");
+      return;
+    }
+
     if (isCartLoading) return;
     setIsCartLoading(true);
+
+    addToCart({
+      product,
+      color: selectedColor,
+      size: selectedSize,
+      quantity: count,
+    });
+
     setTimeout(() => {
       setIsCartLoading(false);
       toast.success("Added to cart!", {
         duration: 4000,
         position: "top-right",
       });
-    }, 1000); // Simulate API delay
+    }, 300);
   };
+
   return (
     <div>
       <div className={`flex items-center gap-2 ${counterMainStyle}`}>
         {counterBtn && (
           <div
-            className={`flex items-center justify-between border border-[#262629]/40 hover:border-primary/40 duration-300  px-2 py-2 md:w-[45%] w-[30%] ${counterStyle}`}
+            className={`flex items-center justify-between border border-[#262629]/40 hover:border-primary/40 duration-300 px-2 ${counterStyle}`}
           >
             <p
               onClick={handleDecrement}
@@ -64,7 +104,7 @@ const AddBtn: React.FC<AddBtnProps> = ({
         {addcartBtn && (
           <div
             onClick={handleAddToCart}
-            className="w-full bg-primary hover:bg-secondary cursor-pointer duration-300  text-white text-center py-2.5"
+            className="w-full bg-primary hover:bg-secondary cursor-pointer duration-300 text-white text-center py-2.5"
           >
             <button className="text-sm outline-none cursor-pointer">
               {isCartLoading ? (

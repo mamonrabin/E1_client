@@ -1,3 +1,4 @@
+import UserPanelLayout from "@/src/components/userPanel/UserPanelLayout";
 
 
 export default function layout({
@@ -7,7 +8,7 @@ export default function layout({
 }>) {
   return (
     <div className="">
-      {children}
+      <UserPanelLayout>{children}</UserPanelLayout>
     </div>
   );
 }

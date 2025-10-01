@@ -1,32 +1,50 @@
-
-import { cartList } from "@/src/api/cartApi";
+"use client";
 import CheckoutProducts from "@/src/components/checkout/CheckoutProducts";
 import CheckoutForm from "@/src/form/CheckoutForm";
+import { useCartStore } from "@/src/store/cartStore";
 import PageSection from "@/src/utilits/PageSection";
+import React, { useState } from "react";
+import { districtList } from "@/src/utilits/allDistict";
 
-import { Metadata } from "next";
-import React from "react";
+const Page = () => {
+  const cart = useCartStore((state) => state.cart);
+  const [selectedCity, setSelectedCity] = useState("");
+
+  const subTottalPrice = cart.reduce((acc, item) => {
+    const price = Number(item.product?.price) || 0;
+    return acc + price * item.quantity;
+  }, 0);
 
 
-export const metadata: Metadata = {
-  title: "soza | checkout",
-  description: "Best E-commerce platform for your business",
-};
+  const shippingCost =
+    selectedCity.toLowerCase() === "dhaka" ? 60 : selectedCity ? 120 : 0;
 
-const page = () => {
+
+      const discount = 0;
+  const totalCost = subTottalPrice + shippingCost - discount;
+
+
   return (
     <div>
       <PageSection second="check out" />
       <div className="Container grid lg:grid-cols-2 gap-12 mt-12">
         <div>
-          <CheckoutForm />
+          <CheckoutForm
+            districtList={districtList}
+            onCityChange={setSelectedCity}
+            subTottalPrice={subTottalPrice}
+            shippingCost={shippingCost}
+            discount={discount}
+            totalCost={totalCost}
+            cart={cart}
+          />
         </div>
-        <div className="">
-          <CheckoutProducts cartList={cartList} />
+        <div>
+          <CheckoutProducts cart={cart}  subTottalPrice={subTottalPrice} shippingCost={shippingCost} totalCost={totalCost} discount={discount} />
         </div>
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;

@@ -1,9 +1,14 @@
+import { apiBaseUrl } from "@/src/config/config";
 import { FilePenLine, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const CheckoutProducts = ({ cartList }) => {
+const CheckoutProducts = ({ cart,subTottalPrice,shippingCost,totalCost,discount }) => {
+   
+   
+
+
   return (
     <div className="border border-primary/20 rounded p-4  lg:mt-10 sticky lg:top-8">
       <div className="flex items-center justify-between">
@@ -19,12 +24,12 @@ const CheckoutProducts = ({ cartList }) => {
       </div>
 
       <div className="mt-4 flex flex-col gap-2 border-b border-primary/20 pb-4 ">
-        {cartList.map((cat) => (
+        {cart.map((cat) => (
           <div key={cat.id} className="flex justify-between">
             <div className="flex gap-4">
               <div className="w-[100px] h-[80px] border">
                 <Image
-                  src={cat.thumbelImage}
+                  src={apiBaseUrl + cat?.product?.thumbal_image}
                   alt="image"
                   width={100}
                   height={100}
@@ -32,14 +37,14 @@ const CheckoutProducts = ({ cartList }) => {
                 />
               </div>
               <div className="w-full">
-                <p className="text-sm">{cat.title}</p>
-                <p className="text-sm">
-                  <span>size : </span> <span>{cat.size}</span>
+                <p className="text-sm line-clamp-1">{cat?.product?.title}</p>
+                <p className="text-sm capitalize">
+                  <span>size : </span> <span>{cat.size || "N/A"}</span>
                 </p>
-                <p className="text-sm font-medium text-primary">
+                <p className="text-sm font-medium text-primary capitalize">
                   <span>price : </span>{" "}
                   <span>
-                    {cat.price} X {cat.quintity}
+                    {cat?.product?.price} X {cat.quantity}
                   </span>
                 </p>
               </div>
@@ -55,22 +60,22 @@ const CheckoutProducts = ({ cartList }) => {
       <div className="flex flex-col gap-1 py-2 border-b border-primary/20">
         <p className="flex items-center justify-between font-medium">
           <span className="text-sm">SubTotal : </span>{" "}
-          <span className="text-base text-primary">৳ 75842</span>
+          <span className="text-base text-primary">৳ {subTottalPrice}</span>
         </p>
         <p className="flex items-center justify-between font-medium">
           <span className="text-sm">Shipping (+): </span>{" "}
-          <span className="text-base text-primary">৳ 70</span>
+          <span className="text-base text-primary">৳ {shippingCost}</span>
         </p>
         <p className="flex items-center justify-between font-medium">
           <span className="text-sm">Discount (-): </span>{" "}
-          <span className="text-base text-primary">৳ 20</span>
+          <span className="text-base text-primary">৳ {discount}</span>
         </p>
       </div>
 
       <div className="mt-2">
         <p className="flex items-center justify-between font-medium">
           <span>Total Cost : </span>{" "}
-          <span className="text-lg text-primary">৳ 75842</span>
+          <span className="text-lg text-primary">৳ {totalCost}</span>
         </p>
       </div>
     </div>

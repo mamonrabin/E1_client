@@ -1,14 +1,16 @@
 "use client";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Mail, Phone, UserRound } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cash from "@/src/assets/payment/cash.png";
 import bkash from "@/src/assets/payment/bkash.jpg";
 import card from "@/src/assets/payment/card.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { districtList } from "../utilits/allDistict";
+import { createOrder } from "../services/order";
+import { useCartStore } from "../store/cartStore";
+import { getCurrentUser } from "../utilits/CurrentUser";
 
 interface CheckoutFormData {
   name: string;
@@ -24,48 +26,98 @@ interface CheckoutFormData {
   paymentMethod: string;
 }
 
-const CheckoutForm = () => {
+const CheckoutForm = ({
+  cart,
+  districtList,
+  onCityChange,
+  subTottalPrice,
+  shippingCost,
+  discount,
+  totalCost,
+}) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutFormData>();
 
+  const clearCart = useCartStore((state) => state.setCart);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const currentUser = getCurrentUser();
+
+  // Auto-fill email if logged in
+  useEffect(() => {
+    if (currentUser?.email) {
+      setValue("email", currentUser.email);
+    }
+  }, [currentUser, setValue]);
 
   const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
+    if (cart.length === 0) {
+      Swal.fire("Cart is empty", "Please add items before checkout", "warning");
+      return;
+    }
+
+    // Check login
+    if (!currentUser) {
+      Swal.fire({
+        title: "Sign in required",
+        text: "Please sign in to place your order",
+        icon: "warning",
+        confirmButtonText: "Sign In",
+      }).then(() => {
+        router.push("/signIn"); // Change this to your login page route
+      });
+      return;
+    }
+
     setLoading(true);
 
-    console.log("Form Data:", data);
-    setTimeout(() => {
-      setLoading(false);
-      Swal.fire({
-        title: "Order Confirmed!",
-        text: "Your order has been placed successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then(() => {
-        router.push("/");
+    try {
+      // Build order payload
+      const order = {
+        subTotalPrice: subTottalPrice,
+        totalPrice: totalCost,
+        shippingCost,
+        userRef: currentUser._id, // optional if backend requires
+        products: cart.map((item) => ({
+          productRef: item.product._id,
+          color: item.color,
+          size: item.size,
+          quantity: item.quantity,
+        })),
+        ...data,
+      };
+
+      const res = await createOrder(order);
+
+      if (res.error) throw new Error(res.error);
+
+      Swal.fire("Success", "Your order has been placed!", "success").then(() => {
+        clearCart([]);
+        router.push("/"); // redirect to home
       });
 
       reset();
-    }, 2000);
+    } catch (error: any) {
+      console.error(error);
+      Swal.fire("Error", error.message || "Failed to place order", "error");
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <div className="">
       <h2 className="text-center text-xl font-medium">Checkout Info</h2>
 
       <div className="border border-primary/20 rounded p-4 mt-4">
-        <h2 className="font-medium text-sm text-primary">
-          Personal Information
-        </h2>
+        <h2 className="font-medium text-sm text-primary">Personal Information</h2>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-3 flex flex-col gap-2"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-3 flex flex-col gap-2">
           <div>
             <div className="flex items-center gap-2 border border-primary/20 rounded">
               <p className="bg-primary text-white px-3 py-2.5 rounded">
@@ -78,9 +130,7 @@ const CheckoutForm = () => {
                 placeholder="Name..."
               />
             </div>
-            {errors.name && (
-              <span className="text-sm text-red-500">name is required</span>
-            )}
+            {errors.name && <span className="text-sm text-red-500">name is required</span>}
           </div>
 
           <div className="flex items-center gap-2">
@@ -106,17 +156,17 @@ const CheckoutForm = () => {
                 <Mail size={16} />
               </p>
               <input
+                {...register("email")}
                 className="outline-none text-sm w-full"
                 type="text"
                 placeholder="Email (If you have)"
+                disabled={!!currentUser?.email} // lock if logged in
               />
             </div>
           </div>
 
           <div className="mt-4">
-            <h2 className="font-medium text-sm text-primary">
-              Shipping Information
-            </h2>
+            <h2 className="font-medium text-sm text-primary">Shipping Information</h2>
 
             <div className="flex gap-2 mt-2">
               <input
@@ -140,12 +190,16 @@ const CheckoutForm = () => {
                 type="text"
                 placeholder="Details Address.."
               />
+              {errors.address && (
+                <span className="text-xs text-red-500">Address is required</span>
+              )}
             </div>
 
             <div className="mt-2 flex items-center gap-2">
               <select
                 {...register("city", { required: true })}
                 className="px-2 py-2 rounded border border-primary/20 text-sm w-full outline-none"
+                onChange={(e) => onCityChange(e.target.value)}
               >
                 <option value="">Select District</option>
                 {districtList.map((district) => (
@@ -154,11 +208,8 @@ const CheckoutForm = () => {
                   </option>
                 ))}
               </select>
-
               {errors.city && (
-                <span className="text-xs text-red-500">
-                  Please select a city
-                </span>
+                <span className="text-xs text-red-500">Please select a city</span>
               )}
 
               <input
@@ -187,12 +238,12 @@ const CheckoutForm = () => {
               <label className="w-[120px] h-[60px] cursor-pointer">
                 <input
                   type="radio"
-                  value="cash"
+                  value="CashOnDelivery"
                   {...register("paymentMethod", { required: true })}
                   className="hidden peer"
                 />
                 <div className="border border-primary/40 peer-checked:border-primary hover:border-primary duration-300 p-4 rounded w-full h-full flex items-center justify-center">
-                  <Image src={cash} alt="Cash" width={100} height={100} />
+                  <Image src={cash} alt="CashOnDelivery" width={100} height={100} />
                 </div>
               </label>
 
@@ -222,16 +273,12 @@ const CheckoutForm = () => {
             </div>
 
             {errors.paymentMethod && (
-              <span className="text-xs text-red-500">
-                Please select a payment method
-              </span>
+              <span className="text-xs text-red-500">Please select a payment method</span>
             )}
           </div>
 
           <div className="mt-2">
-            <h2 className="font-medium text-sm text-primary">
-              Got any Coupon Code?
-            </h2>
+            <h2 className="font-medium text-sm text-primary">Got any Coupon Code?</h2>
 
             <div className="mt-2 flex items-end gap-2 w-full">
               <input
@@ -239,7 +286,10 @@ const CheckoutForm = () => {
                 type="text"
                 placeholder="Enter coupon here..."
               />
-              <button className="xl:text-sm sm:text-[12px] text-[10px] xl:px-4 px-2 xl:py-2 sm:py-2.5 py-3 rounded hover:bg-secondary duration-300 cursor-pointer font-medium bg-primary text-white">
+              <button
+                type="button"
+                className="xl:text-sm sm:text-[12px] text-[10px] xl:px-4 px-2 xl:py-2 sm:py-2.5 py-3 rounded hover:bg-secondary duration-300 cursor-pointer font-medium bg-primary text-white"
+              >
                 Add Coupon
               </button>
             </div>

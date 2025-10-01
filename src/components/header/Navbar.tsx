@@ -22,7 +22,7 @@ const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
-    const currentUser = getCurrentUser(); // get from localStorage/JWT decode
+    const currentUser = getCurrentUser(); 
     setUser(currentUser);
 
     const handleScroll = () => setIsSticky(window.scrollY > 50);
