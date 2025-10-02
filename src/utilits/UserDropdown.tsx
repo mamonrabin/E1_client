@@ -22,8 +22,8 @@ const UserDropdown:React.FC<UserProps> = ({user}) => {
 
   const handleLogout = () => {
     // Clear user data
-    localStorage.removeItem("accessToken"); // if you store jwt
-    localStorage.removeItem("user");  // if you store user object
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user"); 
 
     // Redirect
     router.push("/");

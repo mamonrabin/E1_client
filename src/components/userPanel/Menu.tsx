@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, LogOut } from "lucide-react";
@@ -36,6 +36,7 @@ interface MenuProps {
 }
 
 const Menu = ({ isCollapsed }: MenuProps) => {
+  const router = useRouter();
   const pathname = usePathname();
   const menuList: MenuGroup[] = getUsermenuList(pathname);
 
@@ -48,6 +49,17 @@ const Menu = ({ isCollapsed }: MenuProps) => {
   const [openStates, setOpenStates] = useState<boolean[]>(initialOpenStates);
 
   let menuIndex = 0;
+
+
+  const handleLogout = () => {
+    // Clear user data
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+
+    // Redirect
+    router.push("/");
+    // window.location.reload();
+  };
 
   return (
     <nav className={`fixed  w-full ${isCollapsed ? "top-20" : "top-30"}`}>
@@ -194,15 +206,16 @@ const Menu = ({ isCollapsed }: MenuProps) => {
 
         {/* Sign out */}
         <li className="w-full grow inline-flex items-end mt-5">
-          <Link href="/">
+          
             <button
+            onClick={handleLogout}
               className={`flex  text-white hover:text-primary cursor-pointer justify-center items-center h-10 border border-gray-300 rounded hover:bg-gray-100 duration-300 ${
                 isCollapsed ? "px-2 h-[35px]" : "w-50"
               }`}
             >
               {isCollapsed ? <LogOut size={16} /> : "Sign out"}
             </button>
-          </Link>
+          
         </li>
       </ul>
     </nav>

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SearchLoti from "@/assets/animatedfile/MRzkTPRYob.json";
+import SearchLoti from "@/src/assets/animatedfile/MRzkTPRYob.json";
 import Lottie from "lottie-react";
 const LottieFiles = () => {
   return (

@@ -44,7 +44,7 @@ const SideBar = () => {
             isCollapsed ? "w-[60px] h-[60px] " : "w-[120px] h-[120px]"
           }`}
         >
-          <Link href="/dashboard">
+          <Link href="/">
             <Image
               src={logo}
               alt="Brand Logo"
