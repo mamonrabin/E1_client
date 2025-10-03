@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { createContact } from "../services/contact";
+
+
 interface ContactFormData {
   name: string;
   email: string;
@@ -25,21 +28,40 @@ const ContactForm = () => {
   const onSubmit: SubmitHandler<ContactFormData> = async (data) => {
     setLoading(true);
 
-    console.log("Form Data:", data);
-    setTimeout(() => {
-      setLoading(false);
-      Swal.fire({
-        title: "Message Confirmed!",
-        text: "Your message has been placed successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then(() => {
-        router.push("/");
-      });
+    try {
+      const res = await createContact(data);
 
-      reset();
-    }, 2000);
+      if (res?.error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Message Confirmed!",
+          text: "Your message has been placed successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          router.push("/");
+        });
+        reset();
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        title: "Error!",
+        text: "Unable to send message. Try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <div className="mt-8">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -51,7 +73,7 @@ const ContactForm = () => {
             placeholder="Name"
           />
           {errors.name && (
-            <span className="text-sm text-red-500">name is required</span>
+            <span className="text-sm text-red-500">Name is required</span>
           )}
         </div>
         <div>
@@ -62,7 +84,7 @@ const ContactForm = () => {
             placeholder="Email"
           />
           {errors.email && (
-            <span className="text-sm text-red-500">email is required</span>
+            <span className="text-sm text-red-500">Email is required</span>
           )}
         </div>
         <div>
@@ -73,7 +95,7 @@ const ContactForm = () => {
             placeholder="Phone"
           />
           {errors.phone && (
-            <span className="text-sm text-red-500">phone is required</span>
+            <span className="text-sm text-red-500">Phone is required</span>
           )}
         </div>
 
@@ -81,22 +103,21 @@ const ContactForm = () => {
           <textarea
             {...register("message", { required: true })}
             className="px-2 py-2 border rounded outline-none w-full"
-            placeholder="Your messages"
+            placeholder="Your message"
             cols={30}
             rows={6}
           ></textarea>
           {errors.message && (
-            <span className="text-sm text-red-500">message is required</span>
+            <span className="text-sm text-red-500">Message is required</span>
           )}
         </div>
 
-        <div className="">
+        <div>
           <button
             type="submit"
             disabled={loading}
             className="px-2 py-2 border bg-primary hover:bg-secondary duration-300 rounded outline-none w-full text-[#fff] cursor-pointer"
           >
-            {loading && <span className="animate-spin  rounded-full"></span>}
             {loading ? "Processing..." : "Send Message"}
           </button>
         </div>

@@ -1,19 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { apiBaseUrl } from "@/src/config/config";
+import { TContact } from "@/src/types";
 
-
-export const createOrder = async (order:any) => {
+export const createContact = async (ContactData : TContact) => {
   try {
-    const res = await fetch(`${apiBaseUrl}/order/create-order`, {
+    const res = await fetch(`${apiBaseUrl}/contact/create-contact`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(order),
+      body: JSON.stringify(ContactData),
     });
 
     if (!res.ok) {
-      throw new Error(`Create order failed: ${res.statusText}`);
+      throw new Error(`Create contact failed: ${res.statusText}`);
     }
 
     return res.json();

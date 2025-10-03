@@ -7,9 +7,7 @@ import {
 import { menuList } from "@/src/utilits/menuList";
 
 import { AlignJustify, X } from "lucide-react";
-
 import Link from "next/link";
-
 
 const SideNav = () => {
   return (
@@ -21,13 +19,15 @@ const SideNav = () => {
         <ul className="flex flex-col gap-2 mt-4">
           {menuList.map((item, index) => (
             <li key={index}>
-              <Link
-                href={item.link}
-                className="group relative uppercase text-sm tracking-wider font-medium"
-              >
-                {item.title}
-                <span className="absolute left-0 -bottom-1 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              <SheetClose asChild>
+                <Link
+                  href={item.link}
+                  className="group relative uppercase text-sm tracking-wider font-medium"
+                >
+                  {item.title}
+                  <span className="absolute left-0 -bottom-1 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </SheetClose>
             </li>
           ))}
         </ul>

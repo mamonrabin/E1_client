@@ -1,15 +1,19 @@
-// utils/sortMap.ts
+export type SortKey =
+  | "featured"
+  | "a-z"
+  | "z-a"
+  | "dateNewToOld"
+  | "low-high"
+  | "high-low";
 
-export const sortMap = {
-  "a-z": "a-z",
-  "z-a": "z-a",
-  "low-high": "priceLowToHigh",
-  "high-low": "priceHighToLow",
-  "dateNewToOld": "dateNewToOld", // default
-} as const;
+export const sortMap: Record<SortKey, string> = {
+  featured: "featured",      // 🔹 new
+  "a-z": "nameAsc",
+  "z-a": "nameDesc",
+  dateNewToOld: "dateDesc",
+  "low-high": "priceAsc",
+  "high-low": "priceDesc",
+};
 
-export type SortKey = keyof typeof sortMap;
-export type SortBy = (typeof sortMap)[SortKey];
-
-export const isValidSortBy = (value: string): value is SortBy =>
-  Object.values(sortMap).includes(value as SortBy);
+export const isValidSortBy = (val: string): val is string =>
+  Object.values(sortMap).includes(val);

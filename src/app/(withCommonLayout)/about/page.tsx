@@ -7,7 +7,7 @@ import { Metadata } from "next";
 import PageSection from "@/src/utilits/PageSection";
 
 export const metadata: Metadata = {
-  title: "oqtos | about",
+  title: "soza | about",
   description: "Best E-commerce platform for your business",
 };
 

@@ -5,17 +5,17 @@ import { Minus, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import PriceRange from "./PriceRange";
-import { TBanners, TCategory, TColor, TProducts, TSize } from "@/src/types";
+import {  TBrand, TCategory, TColor, TProducts, TSize } from "@/src/types";
 
 interface ShopProps {
   categories:TCategory[]
-  brands:TBanners[]
-  colors:TColor[]
+  brands:TBrand[]
+  colores:TColor[]
   sizes:TSize[]
   products:TProducts[]
 }
 
-const ShopSideBar:React.FC<ShopProps> = ({ categories, brands, colors, sizes, products }) => {
+const ShopSideBar:React.FC<ShopProps> = ({ categories, brands, colores, sizes, products }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -47,8 +47,8 @@ const ShopSideBar:React.FC<ShopProps> = ({ categories, brands, colors, sizes, pr
   const updateParams = (type: string, value: string | number) => {
     const newParams = new URLSearchParams(searchParams.toString());
 
-    if (type === "colors") {
-      newParams.set("colors", String(value));
+    if (type === "colores") {
+      newParams.set("colores", String(value));
     } else if (type === "minPrice" || type === "maxPrice") {
       newParams.set(type, String(value));
     } else {
@@ -80,7 +80,7 @@ const handleMaxPriceChange = (max: number) => {
   updateParams("maxPrice", max);   // ✅ only updates max
 };
 
-  const uniqueColors = colors?.filter(
+  const uniqueColors = colores?.filter(
     (color: { colorCode: any; }, index: any, self: any[]) =>
       index === self.findIndex((c) => c.colorCode === color.colorCode)
   );
@@ -183,7 +183,7 @@ const handleMaxPriceChange = (max: number) => {
         )}
       </div>
 
-      {/* Colors */}
+      {/* colores */}
       <div className="border border-primary/20 p-6 rounded-sm mt-4">
         <div
           className="flex items-center justify-between cursor-pointer"
@@ -198,10 +198,10 @@ const handleMaxPriceChange = (max: number) => {
             {uniqueColors?.map((color) => (
               <div
                 key={color._id}
-                onClick={() => updateParams("colors", color._id)}
+                onClick={() => updateParams("colores", color._id)}
                 style={{ backgroundColor: color.colorCode }}
                 className={`p-3 rounded-full duration-300 cursor-pointer border border-primary/40 ${
-                  searchParams.get("colors") === color._id
+                  searchParams.get("colores") === color._id
                     ? "ring-2 ring-primary scale-110"
                     : ""
                 }`}

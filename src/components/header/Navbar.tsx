@@ -72,11 +72,15 @@ const Navbar = () => {
         </div>
 
         {/* Logo */}
-        <div className="lg:ml-[-80px]">
+        <div className="lg:ml-[-80px] cursor-pointer">
           {isSticky ? (
-            <Image src={logo2} alt="logo" width={100} height={100} />
+            <Link href="/">
+              <Image src={logo2} alt="logo" width={100} height={100} />
+            </Link>
           ) : (
+            <Link href="/">
             <Image src={logo} alt="logo" width={100} height={100} />
+            </Link>
           )}
         </div>
 

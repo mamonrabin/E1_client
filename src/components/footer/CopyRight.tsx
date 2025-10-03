@@ -7,7 +7,7 @@ const CopyRight = () => {
         © 2025 saro store. All rights reserved.
       </p>
       <p className="sm:text-sm text-[10px] text-white/85">
-        Develop by <span className="cursor-pointer">mamondots</span>
+        Develop by <span className="cursor-pointer">Titasweb</span>
       </p>
     </div>
   );

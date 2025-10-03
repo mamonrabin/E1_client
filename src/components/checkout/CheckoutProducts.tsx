@@ -1,13 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { apiBaseUrl } from "@/src/config/config";
 import { FilePenLine, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const CheckoutProducts = ({ cart,subTottalPrice,shippingCost,totalCost,discount }) => {
-   
-   
+interface CheckoutProductsProps {
+  cart: any[];
+  subTottalPrice: number;
+  shippingCost: number;
+  discount: number;
+  totalCost: number;
+}
 
+const CheckoutProducts:React.FC<CheckoutProductsProps> = ({ cart,subTottalPrice,shippingCost,totalCost,discount }) => {
 
   return (
     <div className="border border-primary/20 rounded p-4  lg:mt-10 sticky lg:top-8">

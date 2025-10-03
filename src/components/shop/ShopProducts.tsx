@@ -7,9 +7,8 @@ import ProductCard from "../products/ProductCard";
 import RowProductCard from "../products/RowProductCard";
 import SortShop from "./SortShop";
 import ShopResponsiveBar from "./ShopResponsiveBar";
-import { TProducts } from "@/src/types";
+import { TBrand, TCategory, TColor, TProducts, TSize } from "@/src/types";
 import { getAllFilterProducts } from "@/src/services/products";
-import { h2 } from "framer-motion/client";
 
 interface ProductProps {
   products: TProducts[];
@@ -21,6 +20,10 @@ interface ProductProps {
   sortBy?: string;
   page: number;   // ✅ added
   limit: number;  // ✅ added
+  categories:TCategory[];
+  brands:TBrand[];
+  colores:TColor[];
+  sizes:TSize[]
 }
 
 const ShopProducts: React.FC<ProductProps> = ({
@@ -33,6 +36,10 @@ const ShopProducts: React.FC<ProductProps> = ({
   sortBy,
   page,
   limit,
+  categories,
+  brands,
+  colores,
+  sizes
 }) => {
   const [viewType, setViewType] = useState<"grid" | "row">("grid");
   const [allProducts, setAllProducts] = useState<TProducts[]>(products);
@@ -66,7 +73,7 @@ const ShopProducts: React.FC<ProductProps> = ({
     <div>
       {/* Responsive filter bar for mobile */}
       <div className="lg:hidden">
-        <ShopResponsiveBar />
+        <ShopResponsiveBar categories={categories} brands={brands} colores={colores} sizes={sizes} products={products} />
       </div>
 
       {/* Top bar with view + sort controls */}
@@ -94,14 +101,14 @@ const ShopProducts: React.FC<ProductProps> = ({
             <Rows3 size={16} />
           </button>
 
-          {/* ✅ Sorting dropdown */}
+      
           <SortShop currentSort={sortBy} />
         </div>
       </div>
 
       {/* Products grid / row */}
       {viewType === "grid" ? (
-        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-2 mt-4">
+        <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2 gap-2 mt-4">
           {allProducts?.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
@@ -109,8 +116,8 @@ const ShopProducts: React.FC<ProductProps> = ({
       ) : (
         <div className="flex flex-col gap-2 mt-4">
           {allProducts?.map((product) => (
-            // <RowProductCard key={product._id} product={product} />
-            <h2 key={product._id}>hi</h2>
+            <RowProductCard key={product._id} product={product} />
+            
           ))}
         </div>
       )}

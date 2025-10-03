@@ -65,7 +65,7 @@ const limit = params.limit ? Number(params.limit) : 6;
             <ShopSideBar
               categories={categories}
               brands={brands}
-              colors={colores}
+              colores={colores}
               sizes={sizes}
               products={products.data}
             />
@@ -83,6 +83,11 @@ const limit = params.limit ? Number(params.limit) : 6;
               sortBy={sortBy}
               page={page}
               limit={limit}
+
+              categories={categories}
+              brands={brands}
+              colores={colores}
+              sizes={sizes}
             />
 
             <div>

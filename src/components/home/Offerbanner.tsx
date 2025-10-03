@@ -15,13 +15,13 @@ const Offerbanner:React.FC<OfferbannerProps> = ({banners}) => {
       <div>
         {offerBanners?.slice(0, 1).map((banner) => (
             <div key={banner._id} className="relative">
-              <div className="md:h-auto h-[200px]">
+              <div className="md:h-[440px] h-[200px]">
                 <Image
                   src={apiBaseUrl + banner.image}
                   alt="offer"
                   width={1200}
                   height={1200}
-                  className="w-full h-full"
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="absolute inset-0 bg-black/40"></div>
@@ -47,13 +47,13 @@ const Offerbanner:React.FC<OfferbannerProps> = ({banners}) => {
       <div>
         {offerBanners?.slice(1, 2).map((banner) => (
             <div key={banner._id} className="relative">
-              <div className="md:h-auto h-[200px]">
+              <div className="md:h-[440px] h-[200px]">
                 <Image
                   src={apiBaseUrl + banner.image}
                   alt="offer"
                   width={1200}
                   height={1200}
-                  className="w-full h-full"
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="absolute inset-0 bg-black/40"></div>

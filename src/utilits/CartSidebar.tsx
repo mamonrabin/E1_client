@@ -18,7 +18,11 @@ import Image from "next/image";
 import { apiBaseUrl } from "../config/config";
 import AddBtn from "./AddBtn";
 
-const SideCartbar = ({ isSticky }) => {
+interface SideCartbarProps {
+  isSticky: boolean;
+}
+
+const SideCartbar = ({ isSticky }: SideCartbarProps) => {
    const cart = useCartStore((state) => state.cart);
    const removeFromCart = useCartStore((state) => state.removeFromCart);
   const [hydrated, setHydrated] = useState(false);

@@ -72,7 +72,7 @@ const AddBtn: React.FC<AddBtnProps> = ({
     setTimeout(() => {
       setIsCartLoading(false);
       toast.success("Added to cart!", {
-        duration: 4000,
+        duration: 600,
         position: "top-right",
       });
     }, 300);

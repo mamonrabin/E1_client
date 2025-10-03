@@ -7,8 +7,13 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import ColorOrSizeFunction from './ColorOrSizeFunction';
 import payment from "@/src/assets/payment/payment.jpg";
+import { TProducts } from '@/src/types';
 
-const ProductDetails = ({product}) => {
+interface productProps {
+  product:TProducts
+}
+
+const ProductDetails:React.FC<productProps> = ({product}) => {
 
     const [selectedColor, setSelectedColor] = useState<string>("");
       const [selectedSize, setSelectedSize] = useState<string>("");

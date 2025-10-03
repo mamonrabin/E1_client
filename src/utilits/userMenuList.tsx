@@ -1,9 +1,6 @@
 import {
-  
   ShoppingCart,
-  
   Ellipsis,
- 
   UserRound,
   CreditCard,
 } from "lucide-react";
@@ -12,7 +9,7 @@ export function getUsermenuList(pathname: string) {
   return [
     {
       groupLabel: "",
-      groupIcon: "",
+      groupIcon: undefined, // ✅ instead of ""
       menus: [
         {
           href: "/profile",
@@ -48,10 +45,7 @@ export function getUsermenuList(pathname: string) {
           icon: CreditCard,
           submenus: [],
         },
-
-        
       ],
     },
-    
   ];
 }

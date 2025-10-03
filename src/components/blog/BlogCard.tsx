@@ -5,10 +5,10 @@ import Link from "next/link";
 import React from "react";
 
 interface blogProps {
-  blog:TBlogs
+  blog: TBlogs;
 }
 
-const BlogCard:React.FC<blogProps> = ({ blog }) => {
+const BlogCard: React.FC<blogProps> = ({ blog }) => {
   return (
     <Link href={`/blogs/${blog.slug}`}>
       <div className="group overflow-hidden cursor-pointer">
@@ -41,13 +41,13 @@ const BlogCard:React.FC<blogProps> = ({ blog }) => {
   })}
 </p> */}
 
-<p className="text-sm text-primary/80">
-  {new Date(blog.createdAt).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })}
-</p>
+          <p className="text-sm text-primary/80">
+            {new Date(blog.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
           <h2 className="line-clamp-1 text-xl font-semibold">{blog.title}</h2>
           <p className="line-clamp-2 text-sm text-primary/80">
             {blog.description}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Mail, Phone, UserRound } from "lucide-react";
@@ -26,15 +27,24 @@ interface CheckoutFormData {
   paymentMethod: string;
 }
 
+interface CheckoutFormProps {
+  cart: any[];
+  districtList: string[];
+  onCityChange: (city: string) => void;
+  subTottalPrice: number;
+  shippingCost: number;
+  discount: number;
+  totalCost: number;
+}
+
 const CheckoutForm = ({
   cart,
   districtList,
   onCityChange,
   subTottalPrice,
   shippingCost,
-  discount,
   totalCost,
-}) => {
+}: CheckoutFormProps) => {
   const {
     register,
     handleSubmit,

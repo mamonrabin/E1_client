@@ -19,7 +19,7 @@ const Footer = () => {
           <Image src={logo} alt="Logo" width={100} height={100} />
           <div className="text-white/80 mt-6">
             <p className="text-sm">
-              Mixtax nec nisl a purus blandit viverra. Pellentesque habitant
+              Titasweb nec nisl a purus blandit viverra. Pellentesque habitant
               morbi tristique senectuse.
             </p>
 

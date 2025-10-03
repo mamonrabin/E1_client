@@ -17,13 +17,28 @@ interface Submenu {
   active: boolean;
 }
 
+// interface MenuItem {
+//   href: string;
+//   label: string;
+//   icon: React.ComponentType<{ size?: number }>;
+//   active: boolean;
+//   submenus: Submenu[];
+// }
+
+
 interface MenuItem {
   href: string;
   label: string;
-  icon: React.ComponentType<{ size?: number }>;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
   active: boolean;
   submenus: Submenu[];
 }
+
+// interface MenuGroup {
+//   groupLabel?: string;
+//   groupIcon?: React.ComponentType<{ size?: number; className?: string }>;
+//   menus: MenuItem[];
+// }
 
 interface MenuGroup {
   groupLabel?: string;

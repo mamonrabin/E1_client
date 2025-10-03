@@ -16,17 +16,17 @@ interface CartState {
   cart: CartItem[];
   setCart: (items: CartItem[]) => void;
   addToCart: (item: CartItem) => void;
-  updateQuantity: (
-    productId: string,
-    quantity: number
-  ) => void;
-  removeFromCart: (
-    productId: string,
-    color?: string,
-    size?: string
-  ) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (productId: string, color?: string, size?: string) => void;
   clearCart: () => void;
 }
+
+// Dummy storage for SSR (prevents localStorage error on server)
+const dummyStorage = {
+  getItem: (_: string) => null,
+  setItem: (_: string, __: string) => {},
+  removeItem: (_: string) => {},
+};
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -38,8 +38,7 @@ export const useCartStore = create<CartState>()(
       addToCart: (item) => {
         const exists = get().cart.find(
           (i) =>
-            (i.product?._id || i.product) ===
-              (item.product?._id || item.product) &&
+            (i.product?._id || i.product) === (item.product?._id || item.product) &&
             i.color === item.color &&
             i.size === item.size
         );
@@ -47,8 +46,7 @@ export const useCartStore = create<CartState>()(
         if (exists) {
           set((state) => ({
             cart: state.cart.map((i) =>
-              (i.product?._id || i.product) ===
-                (item.product?._id || item.product) &&
+              (i.product?._id || i.product) === (item.product?._id || item.product) &&
               i.color === item.color &&
               i.size === item.size
                 ? { ...i, quantity: i.quantity + item.quantity }
@@ -62,15 +60,15 @@ export const useCartStore = create<CartState>()(
         }
       },
 
-     updateQuantity: (productId, quantity) => {
-  set((state) => ({
-    cart: state.cart.map((item) =>
-      (item.product?._id || item.product) === productId
-        ? { ...item, quantity }
-        : item
-    ),
-  }));
-},
+      updateQuantity: (productId, quantity) => {
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            (item.product?._id || item.product) === productId
+              ? { ...item, quantity }
+              : item
+          ),
+        }));
+      },
 
       removeFromCart: (productId, color?, size?) => {
         set((state) => ({
@@ -89,7 +87,13 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "cart-storage",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => {
+        if (typeof window !== "undefined") {
+          return localStorage;
+        }
+        return dummyStorage;
+      }),
+      skipHydration: true, // 👈 prevents hydration mismatch
     }
   )
 );
