@@ -1,5 +1,5 @@
 import logo from "@/src/assets/logo/logo-white.svg";
-import coverImg from "@/src/assets/images/sign-in.jpg";
+import coverImg from "@/src/assets/images/sing.webp";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";

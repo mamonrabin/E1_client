@@ -1,5 +1,5 @@
 import React from "react";
-import image from "@/src/assets/images/bg-breadcrumb.jpg";
+import image from "@/src/assets/images/pageSection.webp";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 interface Props {
