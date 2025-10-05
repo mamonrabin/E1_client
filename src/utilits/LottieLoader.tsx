@@ -1,10 +1,18 @@
 "use client";
+
 import React from "react";
-import loader from "@/src/assets/animatedfile/loader.json";
 import Lottie from "lottie-react";
+import loader from "@/src/assets/animatedfile/loader.json"; // ✅ Correct alias
+
 const LottieLoader = () => {
   return (
-    <Lottie className="md:w-80 w-40" animationData={loader} loop={true} />
+    <div className="flex justify-center items-center w-full h-full">
+      <Lottie
+        animationData={loader}
+        loop
+        className="w-40 md:w-80"
+      />
+    </div>
   );
 };
 

@@ -59,7 +59,7 @@ const Footer = () => {
                 Contact Us
               </li>
             </Link>
-            <Link href="/product">
+            <Link href="/shop">
               <li className="hover:ml-2 hover:text-white duration-300 cursor-pointer">
                 Shop
               </li>

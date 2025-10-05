@@ -8,12 +8,14 @@ export type SortKey =
 
 export const sortMap: Record<SortKey, string> = {
   featured: "featured",      // 🔹 new
-  "a-z": "nameAsc",
-  "z-a": "nameDesc",
+  "a-z": "a-z",
+  "z-a": "z-a",
   dateNewToOld: "dateDesc",
-  "low-high": "priceAsc",
-  "high-low": "priceDesc",
+  "low-high": "priceLowToHigh",
+  "high-low": "priceHighToLow",
 };
 
 export const isValidSortBy = (val: string): val is string =>
   Object.values(sortMap).includes(val);
+
+

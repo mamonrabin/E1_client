@@ -64,6 +64,8 @@ const SortShop: React.FC<SortShopProps> = ({ currentSort }) => {
         <SelectItem value="z-a">Sorting by Z to A</SelectItem>
         <SelectItem value="low-high">Price, low to high</SelectItem>
         <SelectItem value="high-low">Price, high to low</SelectItem>
+        <SelectItem value="high-low">Date, new to old</SelectItem>
+        <SelectItem value="high-low">Date, old to new</SelectItem>
       </SelectContent>
     </Select>
   );

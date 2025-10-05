@@ -23,7 +23,7 @@ const ProductCard: React.FC<cardProps> = ({ product }) => {
     category,
     thumbal_image,
     backview_image,
-    label,
+    labels,
     discount,
     slug,
   } = product;
@@ -93,9 +93,9 @@ const ProductCard: React.FC<cardProps> = ({ product }) => {
 
         {/* Labels */}
         <div className="top-3 left-3 absolute flex gap-2">
-          {label && (
+          {labels === "Trending" && (
             <p className="px-2 py-1 bg-primary uppercase font-medium text-white md:inline-flex hidden sm:text-[12px] text-[10px]">
-              {label}
+              {labels}
             </p>
           )}
           {discount && (

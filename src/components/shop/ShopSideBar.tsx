@@ -5,17 +5,24 @@ import { Minus, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import PriceRange from "./PriceRange";
-import {  TBrand, TCategory, TColor, TProducts, TSize } from "@/src/types";
+import { TBrand, TCategory, TColor, TProducts, TSize } from "@/src/types";
+import SizeFiltering from "./SizeFiltering";
 
 interface ShopProps {
-  categories:TCategory[]
-  brands:TBrand[]
-  colores:TColor[]
-  sizes:TSize[]
-  products:TProducts[]
+  categories: TCategory[];
+  brands: TBrand[];
+  colores: TColor[];
+  sizes: TSize[];
+  products: TProducts[];
 }
 
-const ShopSideBar:React.FC<ShopProps> = ({ categories, brands, colores, sizes, products }) => {
+const ShopSideBar: React.FC<ShopProps> = ({
+  categories,
+  brands,
+  colores,
+  sizes,
+  products,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -27,61 +34,70 @@ const ShopSideBar:React.FC<ShopProps> = ({ categories, brands, colores, sizes, p
   const [collapsed6, setCollapsed6] = useState(false);
 
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeBrandId, setActiveBrandId] = useState<string | null>(null);
+  const [activeSizeId, setActiveSizeId] = useState<string | null>(null);
 
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [priceChanged, setPriceChanged] = useState(false); // ✅ Track user interaction
 
   const visibleCategories = showAll ? categories : categories.slice(0, 5);
 
-  // Sync category params
+  // ✅ Sync category, brand, and size params
   useEffect(() => {
-    const cats = searchParams.get("category")?.split(",") || [];
-    setSelectedCategories(cats);
-
-    const catParam = searchParams.get("category");
-    if (catParam) setActiveCategoryId(catParam.split(",")[0]);
+    setActiveCategoryId(searchParams.get("category"));
+    setActiveBrandId(searchParams.get("brand"));
+    setActiveSizeId(searchParams.get("size"));
   }, [searchParams]);
 
-  // Generic param updater
+  // ✅ Universal param updater
   const updateParams = (type: string, value: string | number) => {
     const newParams = new URLSearchParams(searchParams.toString());
+    const strValue = String(value);
 
-    if (type === "colores") {
-      newParams.set("colores", String(value));
-    } else if (type === "minPrice" || type === "maxPrice") {
-      newParams.set(type, String(value));
-    } else {
-      const currentValues = new Set(
-        (searchParams.get(type)?.split(",") || []).filter(Boolean)
-      );
-      if (currentValues.has(String(value))) {
-        currentValues.delete(String(value));
-      } else {
-        currentValues.add(String(value));
-      }
-      if (currentValues.size > 0) {
-        newParams.set(type, Array.from(currentValues).join(","));
-      } else {
+    if (["category", "brand", "size"].includes(type)) {
+      const currentValue = searchParams.get(type);
+      if (currentValue === strValue) {
         newParams.delete(type);
+        if (type === "category") setActiveCategoryId(null);
+        if (type === "brand") setActiveBrandId(null);
+        if (type === "size") setActiveSizeId(null);
+      } else {
+        newParams.set(type, strValue);
+        if (type === "category") setActiveCategoryId(strValue);
+        if (type === "brand") setActiveBrandId(strValue);
+        if (type === "size") setActiveSizeId(strValue);
       }
+    } else if (type === "colores") {
+      newParams.set("colores", strValue);
+    } else if (type === "minPrice" || type === "maxPrice") {
+      newParams.set(type, strValue);
     }
 
     router.push(`?${newParams.toString()}`);
   };
 
-  const handleMinPriceChange = (min: number) => {
-  setMinPrice(min);
-  updateParams("minPrice", min);   // ✅ only updates min
-};
+  // ✅ Only update URL when user changes price manually
+  useEffect(() => {
+    if (priceChanged && minPrice !== null && maxPrice !== null) {
+      updateParams("minPrice", minPrice);
+      updateParams("maxPrice", maxPrice);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minPrice, maxPrice]);
 
-const handleMaxPriceChange = (max: number) => {
-  setMaxPrice(max);
-  updateParams("maxPrice", max);   // ✅ only updates max
-};
+  const handleMinPriceChange = (min: number) => {
+    setMinPrice(min);
+    setPriceChanged(true);
+  };
+
+  const handleMaxPriceChange = (max: number) => {
+    setMaxPrice(max);
+    setPriceChanged(true);
+  };
 
   const uniqueColors = colores?.filter(
-    (color: { colorCode: any; }, index: any, self: any[]) =>
+    (color, index, self) =>
       index === self.findIndex((c) => c.colorCode === color.colorCode)
   );
 
@@ -102,10 +118,7 @@ const handleMaxPriceChange = (max: number) => {
             {visibleCategories.map((category) => (
               <ul key={category._id}>
                 <li
-                  onClick={() => {
-                    updateParams("category", category._id);
-                    setActiveCategoryId(category._id);
-                  }}
+                  onClick={() => updateParams("category", category._id)}
                   className={`text-sm capitalize cursor-pointer hover:text-primary duration-300 ${
                     activeCategoryId === category._id
                       ? "text-primary font-semibold"
@@ -146,7 +159,7 @@ const handleMaxPriceChange = (max: number) => {
                 key={brand._id}
                 onClick={() => updateParams("brand", brand._id)}
                 className={`text-sm capitalize cursor-pointer hover:text-primary duration-300 ${
-                  searchParams.get("brand") === brand._id
+                  activeBrandId === brand._id
                     ? "text-primary font-semibold"
                     : ""
                 }`}
@@ -169,21 +182,11 @@ const handleMaxPriceChange = (max: number) => {
         </div>
 
         {!collapsed4 && (
-          <div className="flex flex-wrap gap-2 mt-2 capitalize text-sm list-none">
-            {sizes?.map((size) => (
-              <div
-                key={size._id}
-                onClick={() => updateParams("size", size._id)}
-                className="px-2 py-0.5 bg-primary text-white rounded-sm hover:bg-secondary duration-300 cursor-pointer"
-              >
-                {size.title}
-              </div>
-            ))}
-          </div>
+          <SizeFiltering sizes={sizes} updateParams={updateParams} />
         )}
       </div>
 
-      {/* colores */}
+      {/* Color */}
       <div className="border border-primary/20 p-6 rounded-sm mt-4">
         <div
           className="flex items-center justify-between cursor-pointer"
@@ -227,10 +230,10 @@ const handleMaxPriceChange = (max: number) => {
           <div className="mt-2">
             <PriceRange
               minPrice={minPrice ?? 0}
-  maxPrice={maxPrice ?? 0}
-  onMinChange={handleMinPriceChange}
-  onMaxChange={handleMaxPriceChange}
-  products={products}
+              maxPrice={maxPrice ?? 0}
+              onMinChange={handleMinPriceChange}
+              onMaxChange={handleMaxPriceChange}
+              products={products}
             />
           </div>
         )}

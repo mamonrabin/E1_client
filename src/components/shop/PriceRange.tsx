@@ -18,7 +18,6 @@ export default function PriceRangeFilter({
   onMaxChange,
   products,
 }: PriceRangeFilterProps) {
-  // 🟢 Find highest product price
   const calculatedMaxPrice =
     products.length > 0
       ? Math.max(...products.map((p) => p.price || p.mrpPrice || 0))
@@ -27,10 +26,21 @@ export default function PriceRangeFilter({
   const [min, setMin] = useState(minPrice ?? 0);
   const [max, setMax] = useState(maxPrice ?? calculatedMaxPrice);
 
-  // ✅ Only update max if products change AND no external maxPrice is provided
+  // ✅ Keep local state in sync when parent props change
+  useEffect(() => {
+    setMin(minPrice ?? 0);
+  }, [minPrice]);
+
+  useEffect(() => {
+    setMax(maxPrice ?? calculatedMaxPrice);
+  }, [maxPrice, calculatedMaxPrice]);
+
+  // ✅ Update max when products change and no maxPrice given
   useEffect(() => {
     if (products.length > 0 && !maxPrice) {
-      const highestPrice = Math.max(...products.map((p) => p.price || p.mrpPrice || 0));
+      const highestPrice = Math.max(
+        ...products.map((p) => p.price || p.mrpPrice || 0)
+      );
       setMax(highestPrice);
       onMaxChange(highestPrice);
     }
@@ -55,9 +65,7 @@ export default function PriceRangeFilter({
     <div className="group border-b border-gray-200">
       <div className="pb-4">
         <div className="relative my-4">
-          {/* background line */}
           <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 bg-gray-200 rounded" />
-          {/* active range */}
           <div
             className="absolute top-1/2 h-1 bg-black rounded"
             style={{

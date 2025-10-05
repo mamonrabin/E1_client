@@ -5,17 +5,16 @@ import { TProducts } from "@/src/types";
 import Link from "next/link";
 import React from "react";
 
-interface trandingProps {
-  products:TProducts[]
+interface NewProductsProps {
+  products: TProducts[];
 }
 
-const TrendingProducts:React.FC<trandingProps> = ({products}) => {
-  console.log("trending------",products)
+const NewArrivals:React.FC<NewProductsProps> = ({products}) => {
   return (
     <div className="Container py-4 mt-4">
       <div className="flex items-center justify-between">
         <h2 className="md:text-xl text-lg font-medium uppercase">
-          Trending Now
+          New Arrivals
         </h2>
         <Link href="/shop">
         <p className="font-medium capitalize border-primary/40 border-b cursor-pointer bounce-x-hover">
@@ -23,6 +22,8 @@ const TrendingProducts:React.FC<trandingProps> = ({products}) => {
         </p>
         </Link>
       </div>
+
+      
 
       <div className="mt-4">
         {products && products.length > 0 ? (
@@ -37,4 +38,4 @@ const TrendingProducts:React.FC<trandingProps> = ({products}) => {
   );
 };
 
-export default TrendingProducts;
+export default NewArrivals;

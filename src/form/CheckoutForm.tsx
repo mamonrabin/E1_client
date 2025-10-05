@@ -245,7 +245,7 @@ const CheckoutForm = ({
             <h2 className="font-medium text-sm text-primary">Payment Method</h2>
 
             <div className="flex items-center gap-2 mt-2">
-              <label className="w-[120px] h-[60px] cursor-pointer">
+              <label className="md:w-[120px] w-[100px] h-[60px] cursor-pointer">
                 <input
                   type="radio"
                   value="CashOnDelivery"
@@ -257,7 +257,7 @@ const CheckoutForm = ({
                 </div>
               </label>
 
-              <label className="w-[120px] h-[60px] cursor-pointer">
+              <label className="md:w-[120px] w-[100px] h-[60px] cursor-pointer">
                 <input
                   type="radio"
                   value="bkash"
@@ -269,7 +269,7 @@ const CheckoutForm = ({
                 </div>
               </label>
 
-              <label className="w-[120px] h-[60px] cursor-pointer">
+              <label className="md:w-[120px] w-[100px] h-[60px] cursor-pointer">
                 <input
                   type="radio"
                   value="card"

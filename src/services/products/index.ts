@@ -99,12 +99,16 @@ export const getAllNewProducts = async () =>{
  return res.json();
 }
 
-export const getAllTrendingProducts = async () =>{
+export const getAllBestSellProducts = async () =>{
  const res = await fetch(`${apiBaseUrl}/product/best-sellers?limit=6`);
  return res.json();
 }
 export const getAllDiscountProducts = async () =>{
  const res = await fetch(`${apiBaseUrl}/product/discount-products?limit=6`);
+ return res.json();
+}
+export const getAllTrendingProducts = async () =>{
+ const res = await fetch(`${apiBaseUrl}/product/trending-products?limit=6`);
  return res.json();
 }
 
