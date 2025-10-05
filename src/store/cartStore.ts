@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -23,6 +24,7 @@ interface CartState {
 
 // Dummy storage for SSR (prevents localStorage error on server)
 const dummyStorage = {
+
   getItem: (_: string) => null,
   setItem: (_: string, __: string) => {},
   removeItem: (_: string) => {},

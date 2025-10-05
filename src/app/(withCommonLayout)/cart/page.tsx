@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client"
-import { cartList } from "@/src/api/cartApi";
+
 import { apiBaseUrl } from "@/src/config/config";
 import { useCartStore } from "@/src/store/cartStore";
 import AddBtn from "@/src/utilits/AddBtn";
@@ -10,7 +10,7 @@ import { Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { BiMinus, BiPlus } from "react-icons/bi";
+
 
 
 

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 
 interface ColorOrSizeFunctionProps {
   colors: any[];

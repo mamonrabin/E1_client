@@ -1,20 +1,9 @@
 import {
-  Tag,
-  LayoutGrid,
+  
   ShoppingCart,
-  Shapes,
-  Package2,
-  TicketPercent,
-  FlameKindling,
-  Images,
-  BookOpen,
-  FilePenLine,
+ 
   Ellipsis,
-  ShieldCheck,
-  Siren,
-  MessageSquarePlus,
-  MapPin,
-  Contact,
+  
   UserRound,
   CreditCard,
 } from "lucide-react";
