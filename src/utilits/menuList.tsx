@@ -15,9 +15,9 @@ export const menuList = [
   },
   {
     title: "Blogs",
-    link: "/blogs",
+    link: "/blog",
   },
-  {
+  { 
     title: "Contact us",
     link: "/contact",
   },
