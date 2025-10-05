@@ -19,12 +19,3 @@ export const getBlogBySlug = async (slug: string) => {
   return res.json();
 };
 
-// export const getSingleProductBySlug = async (slug: string) => {
-//   const res = await fetch(`${apiBaseUrl}/product/${slug}`);
-
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch product");
-//   }
-
-//   return res.json();
-// };
