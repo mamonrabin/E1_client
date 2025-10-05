@@ -10,7 +10,7 @@ interface blogProps {
 
 const BlogCard: React.FC<blogProps> = ({ blog }) => {
   return (
-    <Link href={`/blogs/${blog.slug}`}>
+    <Link href={`/blog/${blog.slug}`}>
       <div className="group overflow-hidden cursor-pointer">
         <div className="overflow-hidden relative w-full lg:h-[280px]">
           <Image
