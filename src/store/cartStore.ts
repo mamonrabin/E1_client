@@ -11,7 +11,7 @@ interface CartItem {
   size?: string;
   product: any;
   quantity: number;
-}
+} 
 
 interface CartState {
   cart: CartItem[];

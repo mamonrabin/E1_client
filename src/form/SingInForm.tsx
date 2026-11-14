@@ -6,13 +6,16 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ForgetPassword from "./ForgetPassword";
-import { Eye, EyeOff } from "lucide-react"; // Eye icons
+import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { login } from "../services/auth";
 
 interface SingInFormData {
   email: string;
   password: string;
 }
+
+const inputBase =
+  "w-full rounded-lg border bg-white py-3 pl-11 pr-4 text-[15px] text-[#262626] outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-4 focus:ring-primary/10";
 
 const SingInForm = () => {
   const {
@@ -29,84 +32,115 @@ const SingInForm = () => {
   const onSubmit: SubmitHandler<SingInFormData> = async (data) => {
     setLoading(true);
     try {
-      const result = await login(data); // ✅ use service function
+      const result = await login(data);
 
       if (result?.accessToken) {
         localStorage.setItem("accessToken", result.accessToken);
-        toast.success("login successful!");
-        router.push("/"); // redirect home
+        toast.success("Login successful!");
+        reset(); // clear only on success, so users can fix a typo after a failed try
+        router.push("/");
       } else {
         toast.error(result?.message || "No token received");
       }
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message || "login failed");
+      toast.error(error.message || "Login failed");
     } finally {
       setLoading(false);
-      reset();
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="py-4 flex flex-col gap-2 px-12"
-    >
-      {/* Email Input */}
-      <input
-        {...register("email", { required: true })}
-        className="px-2 py-3 border border-primary/20 outline-none"
-        type="text"
-        placeholder="Email"
-      />
-      {errors.email && (
-        <span className="text-red-500 capitalize">email is required</span>
-      )}
-
-      {/* Password Input with Eye Icon */}
-      <div className="relative">
-        <input
-          {...register("password", { required: true })}
-          className="px-2 py-3 border border-primary/20 outline-none w-full pr-10"
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
+      {/* Email */}
+      <div>
+        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#262626]">
+          Email
+        </label>
+        <div className="relative">
+          <Mail size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@example.com"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "email-error" : undefined}
+            className={`${inputBase} ${errors.email ? "border-red-500" : "border-primary/20"}`}
+            {...register("email", {
+              required: "Enter your email",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Enter a valid email address",
+              },
+            })}
+          />
+        </div>
+        {errors.email && (
+          <p id="email-error" role="alert" className="mt-1.5 text-sm text-red-500">
+            {errors.email.message}
+          </p>
+        )}
       </div>
-      {errors.password && (
-        <span className="text-red-500 capitalize">password is required</span>
-      )}
 
-      {/* Submit Button */}
+      {/* Password */}
+      <div>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label htmlFor="password" className="text-sm font-medium text-[#262626]">
+            Password
+          </label>
+          <span className="text-sm text-[#474646] transition-colors duration-300 hover:text-primary">
+            <ForgetPassword />
+          </span>
+        </div>
+        <div className="relative">
+          <Lock size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            placeholder="Enter your password"
+            aria-invalid={!!errors.password}
+            aria-describedby={errors.password ? "password-error" : undefined}
+            className={`${inputBase} pr-12 ${errors.password ? "border-red-500" : "border-primary/20"}`}
+            {...register("password", { required: "Enter your password" })}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-gray-500 transition-colors hover:text-primary"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
+        {errors.password && (
+          <p id="password-error" role="alert" className="mt-1.5 text-sm text-red-500">
+            {errors.password.message}
+          </p>
+        )}
+      </div>
+
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading}
-        className="px-2 py-3 bg-primary text-white cursor-pointer hover:bg-secondary duration-300 font-medium transition-all outline-none"
+        className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary py-3.5 font-medium text-white transition-all duration-300 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {loading && <span className="animate-spin rounded-full"></span>}
-        {loading ? "sign in..." : "Sign In"}
+        {loading && <Loader2 size={18} className="animate-spin" />}
+        {loading ? "Signing in..." : "Sign in"}
       </button>
 
-      {/* Links */}
-      <div>
-        <p className="text-[#474646] cursor-pointer duration-300 hover:text-primary">
-          <ForgetPassword />
-        </p>
-        <p className="text-center py-4 text-[#474646]">
-          If you are new here{" "}
-          <Link href="/signUp">
-            <span className="font-medium text-primary cursor-pointer capitalize hover:text-secondary duration-300">
-              create account first
-            </span>
-          </Link>
-        </p>
-      </div>
+      {/* Footer */}
+      <p className="text-center text-sm text-[#474646]">
+        New here?{" "}
+        <Link
+          href="/signUp"
+          className="font-medium text-primary transition-colors duration-300 hover:text-secondary"
+        >
+          Create an account
+        </Link>
+      </p>
     </form>
   );
 };

@@ -17,6 +17,6 @@
 export const apiBaseUrl =
   process.env.API_BASE_URL ||
   (process.env.NODE_ENV === "production"
-    ? "https://server-gilt-theta.vercel.app/api/v1"
-    : "http://localhost:3000/api/v1");
+    ? "http://localhost:8001/api/v1"
+    : "http://localhost:8001/api/v1");
 

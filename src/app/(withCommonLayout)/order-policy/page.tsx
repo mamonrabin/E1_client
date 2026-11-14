@@ -1,244 +1,452 @@
 
 import PageSection from "@/src/utilits/PageSection";
 import { Metadata } from "next";
+import Link from "next/link";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "soza | order policy",
-  description: "Best E-commerce platform for your business",
+  title: "Order Policy | SOZA",
+  description:
+    "Read SOZA's order policy to learn about ordering, confirmation, payment, shipping, delivery, and cancellations.",
 };
 
-const page = () => {
-  return (
-    <div>
-      <PageSection second="Order Policy" />
-      <div className="Container py-6 lg:mt-4">
-        <div className="flex flex-col gap-2 lg:gap-4">
-          <div className="md:text-2xl text-xl  font-semibold text-[#262626] text-center mt-4">
-            Order Policies
-          </div>
-
-          <div className="policy-page-text">
-            soza respects and protects the privacy of our customers and users
-            who visit our websites. soza knows that you care how information
-            about you is used and shared, and we appreciate your trust that we
-            will do so carefully and sensibly.
-          </div>
-
-          <div className="policy-page-text ">
-            You are advised to read the Privacy Policy carefully. By accessing
-            the services provided by soza.com you agree to the collection and
-            use of your data by soza.com in the manner provided in this Privacy
-            Policy.
-          </div>
-
-          <div className="policy-page-text font-semibold">
-            What information is, or may be, collected from you?
-          </div>
-
-          <div className="policy-page-text ">
-            We will automatically receive and collect certain anonymous
-            information in standard usage logs through our Web server, including
-            computer-identification information obtained from cookies sent to
-            your browser from a web server cookie stored on your hard drive an
-            IP address, assigned to the computer which you use the domain server
-            through which you access our service the type of computer you re
-            using the type of web browser you re using.
-          </div>
-
-          <div className="policy-page-text ">
-            We may collect the following personally identifiable information
-            about you -
-            <ul className="policy-page-li">
-              <li>Name including first and last name.</li>
-              <li>Alternate email address.</li>
-              <li>Mobile phone number and contact details.</li>
-              <li>ZIP/Postal code.</li>
-              <li>
-                Financial information (like account or credit card numbers) -
-                Opinions of features on our websites.
-              </li>
-              <li>Other information as per our registration process.</li>
-            </ul>
-          </div>
-
-          <div className="policy-page-text ">
-            We may also collect the following information -
-            <ul className="policy-page-li">
-              <li>About the pages you visit/access.</li>
-              <li>The links you click on our site.</li>
-              <li>The number of times you access the page.</li>
-              <li>ZIP/Postal code.</li>
-              <li>The number of times you have shopped on our web site.</li>
-            </ul>
-          </div>
-
-          <div className="policy-page-text">
-            You can terminate your account at any time. However, your
-            information may remain stored in archive on our servers even after
-            the deletion or the termination of your account.
-          </div>
-
-          <div className="policy-page-text font-semibold">
-            Who collects the information?
-          </div>
-
-          <div className="policy-page-text">
-            We will collect anonymous traffic information from you when you
-            visit our site. We will collect personally identifiable information
-            about you only as part of a voluntary registration process, on-line
-            survey, or contest or any combination there of. Our advertisers may
-            collect anonymous traffic information from their own assigned
-            cookies to your browser. The Site contains links to other Web sites.
-            We are not responsible for the privacy practices of such Web sites
-            which we do not own, manage or control.
-          </div>
-
-          <div className="policy-page-text font-semibold">
-            Usage of Information
-          </div>
-
-          <div className="policy-page-text">
-            <div>We use your personal information to:</div>
-            <ul className="policy-page-li">
-              <li>
-                Make our bond more stronger by knowing your interests and
-                tailoring our site
-              </li>
-              <li>Get in touch with you when necessary</li>
-              <li>Provide the services requested by you</li>
-              <li>
-                Preserve social history as governed by existing law or policy
-              </li>
-            </ul>
-          </div>
-
-          <div className="policy-page-text">
-            <div>We use contact information internally to:</div>
-            <ul className="policy-page-li">
-              <li>Direct our efforts for product improvement</li>
-              <li>Contact you as a survey respondent</li>
-              <li>Notify you if you win any contest; and</li>
-              <li>
-                Send you promotional materials from our contest sponsors or
-                advertisers
-              </li>
-            </ul>
-          </div>
-
-          <div className="policy-page-text">
-            <div>Generally, we use anonymous traffic information to:</div>
-            <ul className="policy-page-li">
-              <li>Recognize your access privileges to our websites</li>
-              <li>
-                Track your entries in some of our promotions, sweepstakes and
-                contests to indicate a players progress through the promotion
-                and to track entries, submissions, and status in prize drawings
-              </li>
-              <li>Make sure that you don t see the same ad repeatedly</li>
-              <li>Help diagnose problems with our server</li>
-              <li>
-                Administer our websites, track your session so that we can
-                understand better how people use our sites
-              </li>
-            </ul>
-          </div>
-
-          <div className="">
-            <div className="policy-page-text font-bold">
-              Sharing Information to Third Party
-            </div>
-            <div className="policy-page-text">
-              We will not use your financial information for any purpose other
-              than to complete a transaction with you. We do not rent, sell or
-              share your personal information and we will not disclose any of
-              your personally identifiable information to third parties unless:
-            </div>
-            <ul className="policy-page-text policy-page-li">
-              <li>we have your permission</li>
-              <li>to provide products or services you ve requested</li>
-              <li>
-                to help investigate, prevent or take action regarding unlawful
-                and illegal activities, suspected fraud, potential threat to the
-                safety or security of any person, violations of soza.com s terms
-                of use or to defend against legal claims
-              </li>
-              <li>
-                Special circumstances such as compliance with subpoenas, court
-                orders, requests/order, notices from legal authorities or law
-                enforcement agencies requiring such disclosure.
-              </li>
-              <li>
-                We share your information with advertisers on an aggregate basis
-                only.
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="policy-page-text font-bold">
-              Available Choices Regarding Information Collection and
-              Re-distribution
-            </div>
-            <div className="policy-page-text">
-              You may change your interests at any time and may opt-in or
-              opt-out of any marketing / promotional / newsletters mailings.
-              soza.com reserves the right to send you certain service related
-              communication, considered to be a part of your soza.com account
-              without offering you the facility to opt-out. You may update your
-              information and change your account settings at any time.
-            </div>
-            <div className="policy-page-text">
-              Upon request, we will remove/block your personally identifiable
-              information from our database, thereby canceling your
-              registration. However, your information may remain stored in
-              archive on our servers even after the deletion or the termination
-              of your account. If we plan to use your personally identifiable
-              information for any commercial purposes, we will notify you at the
-              time we collect that information and allow you to opt-out of
-              having your information used for those purposes.
-            </div>
-          </div>
-
-          <div className="policy-page-text font-bold">
-            Security Procedures to Protect Information
-          </div>
-          <div className="policy-page-text">
-            To protect against the loss, misuse and alteration of the
-            information under our control, we have in place appropriate
-            physical, electronic and managerial procedures. For example, our
-            servers are accessible only to authorized personnel and that your
-            information is shared with respective personnel on need to know
-            basis to complete the transaction and to provide the services
-            requested by you.
-          </div>
-
-          <div className="policy-page-text font-bold">Your rights</div>
-
-          <div className="policy-page-text">
-            If you are concerned about your data you have the right to request
-            access to the personal data which we may hold or process about you.
-            You have the right to require us to correct any inaccuracies in your
-            data free of charge. At any stage, you also have the right to ask us
-            to stop using your personal data for direct marketing purposes. If
-            you at any stage want to delete your personal data from soza, across
-            all platforms, you have the full right to do so. Please send an
-            email to support@soza.com, we will process your request within the
-            next business day and will notify you about the update.
-          </div>
-
-          <div>
-            <div className="policy-page-text font-bold">Policy updates</div>
-            <div className="policy-page-text">
-              We reserve the right to change or update this policy at any time
-              by placing a prominent notice on our site. Such changes shall be
-              effective immediately upon posting to this site.
-            </div>
-          </div>
-        </div>
-      </div>
+const PolicySection = ({
+  number,
+  title,
+  children,
+}: {
+  number: string;
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <section className="space-y-3">
+    <h2 className="text-lg font-semibold text-[#202020] sm:text-xl">
+      {number}. {title}
+    </h2>
+    <div className="space-y-3 text-sm leading-7 text-gray-600 sm:text-base">
+      {children}
     </div>
+  </section>
+);
+
+const PolicyList = ({ items }: { items: string[] }) => (
+  <ul className="list-disc space-y-2 pl-6 marker:text-[#087096]">
+    {items.map((item, index) => (
+      <li key={index}>{item}</li>
+    ))}
+  </ul>
+);
+
+const OrderPolicyPage = () => {
+  return (
+    <main>
+      <PageSection second="Order Policy" />
+
+      <div className="Container px-4 py-8 sm:px-6 lg:px-16 lg:py-12">
+        <article className="mx-auto max-w-5xl">
+          {/* Page Header */}
+          <div className="mb-8">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <span className="text-[#087096]">Order</span>
+                <span>/</span>
+                <span>Policy</span>
+              </div>
+
+              <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+                Active
+              </span>
+            </div>
+
+            <h1 className="text-2xl font-bold text-[#202020] sm:text-3xl lg:text-4xl">
+              Order Policy
+            </h1>
+
+            <p className="mt-3 text-sm text-gray-400">
+              Updated November 13, 2026
+            </p>
+          </div>
+
+          {/* Introduction */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold leading-snug text-[#202020] sm:text-3xl">
+              Every Order Matters. Every Customer Counts.
+            </h2>
+
+            <p className="text-sm leading-7 text-gray-600 sm:text-base">
+              At SOZA, we aim to make your shopping experience simple,
+              convenient, and reliable. Our Order Policy explains how orders
+              are placed, confirmed, processed, shipped, delivered, and
+              managed.
+            </p>
+
+            <p className="text-sm leading-7 text-gray-600 sm:text-base">
+              By placing an order through our website, you agree to the
+              following terms and conditions.
+            </p>
+          </div>
+
+          <hr className="my-8 border-gray-200" />
+
+          <div className="space-y-8">
+            <PolicySection number="01" title="Placing an Order">
+              <p>Customers can place orders directly through the SOZA website.</p>
+
+              <p>To place an order:</p>
+
+              <PolicyList
+                items={[
+                  "Browse our collections and select your desired products.",
+                  "Choose your preferred size, color, and quantity where available.",
+                  "Add your selected products to the shopping cart.",
+                  "Proceed to checkout and provide your delivery information.",
+                  "Select an available payment method.",
+                  "Review your order details and submit your order.",
+                ]}
+              />
+
+              <p>
+                Please check all information carefully before confirming
+                your purchase.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="02" title="Customer Information">
+              <p>
+                Customers must provide accurate and complete information
+                when placing an order.
+              </p>
+
+              <p>Required information may include:</p>
+
+              <PolicyList
+                items={[
+                  "Full name.",
+                  "Active phone number.",
+                  "Email address, where applicable.",
+                  "Complete delivery address.",
+                  "District, city, and area information.",
+                ]}
+              />
+
+              <p>
+                SOZA is not responsible for delivery issues caused by
+                incorrect or incomplete information provided by customers.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="03" title="Order Confirmation">
+              <p>
+                After placing an order, customers may receive confirmation
+                through the website, SMS, phone call, or email, depending on
+                available communication services.
+              </p>
+
+              <PolicyList
+                items={[
+                  "All orders are subject to verification and product availability.",
+                  "Our team may contact customers to confirm order details.",
+                  "An order is considered confirmed when accepted by SOZA.",
+                  "We reserve the right to hold or cancel orders that cannot be verified or fulfilled.",
+                ]}
+              />
+            </PolicySection>
+
+            <PolicySection number="04" title="Order Processing">
+              <p>
+                Once an order is confirmed, our team begins preparing it for
+                shipment.
+              </p>
+
+              <p>The processing procedure may include:</p>
+
+              <PolicyList
+                items={[
+                  "Verifying order information.",
+                  "Checking product, color, and size availability.",
+                  "Inspecting product quality.",
+                  "Preparing and packaging the products.",
+                  "Arranging shipment with our delivery partners.",
+                ]}
+              />
+
+              <p>
+                Processing times may vary depending on product availability,
+                order volume, and operational conditions.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="05" title="Payment Methods">
+              <p>
+                SOZA supports the payment methods displayed during checkout.
+                Depending on availability, these may include:
+              </p>
+
+              <PolicyList
+                items={[
+                  "Cash on Delivery (COD).",
+                  "Mobile Financial Services, where available.",
+                  "Online debit and credit card payments, where available.",
+                  "Other payment methods displayed during checkout.",
+                ]}
+              />
+
+              <p>
+                Customers must complete any required payment verification
+                before an order can be processed or dispatched.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="06" title="Pricing & Order Charges">
+              <p>
+                All product prices are displayed on the SOZA website.
+                Additional charges may include:
+              </p>
+
+              <PolicyList
+                items={[
+                  "Delivery charges.",
+                  "Applicable service fees, if displayed.",
+                  "Other charges clearly communicated during checkout.",
+                ]}
+              />
+
+              <p>
+                The final payable amount will be shown before order
+                submission. SOZA reserves the right to correct pricing or
+                product information errors and contact customers if an
+                order is affected.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="07" title="Shipping & Delivery">
+              <p>
+                We work with delivery partners to ensure your orders reach
+                you safely.
+              </p>
+
+              <p>
+                Delivery timelines and charges depend on your delivery
+                location and the selected delivery service.
+              </p>
+
+              <PolicyList
+                items={[
+                  "Estimated delivery information will be communicated during checkout or order confirmation.",
+                  "Delivery times may vary depending on courier availability and location.",
+                  "Public holidays, weather, traffic, and other unforeseen circumstances may cause delays.",
+                  "Delivery charges will be displayed during checkout or communicated before order confirmation.",
+                ]}
+              />
+            </PolicySection>
+
+            <PolicySection number="08" title="Delivery Address & Contact">
+              <p>
+                Customers are responsible for providing accurate delivery
+                information.
+              </p>
+
+              <p>Please ensure:</p>
+
+              <PolicyList
+                items={[
+                  "Your phone number is active and reachable.",
+                  "Your delivery address is complete.",
+                  "Your area, district, and city information is correct.",
+                  "Someone is available to receive the order.",
+                ]}
+              />
+
+              <p>
+                If delivery information needs to be updated, contact our
+                support team as soon as possible. Changes may not be possible
+                once an order has been dispatched.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="09" title="Order Tracking & Updates">
+              <p>
+                Customers may receive updates about their order status
+                through available website features, SMS, phone calls, or
+                email.
+              </p>
+
+              <p>Order statuses may include:</p>
+
+              <PolicyList
+                items={[
+                  "Pending.",
+                  "Confirmed.",
+                  "Processing.",
+                  "Shipped.",
+                  "Out for Delivery.",
+                  "Delivered.",
+                  "Cancelled.",
+                ]}
+              />
+
+              <p>
+                Tracking availability depends on the order management
+                system and delivery partner.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="10" title="Order Cancellation">
+              <p>
+                Customers may request order cancellation before the order
+                is dispatched.
+              </p>
+
+              <PolicyList
+                items={[
+                  "Cancellation requests should be submitted through our customer support team.",
+                  "Orders that have already been shipped may not be eligible for cancellation.",
+                  "Prepaid order refunds, where applicable, will follow our refund policy.",
+                  "SOZA reserves the right to cancel orders affected by stock shortages, pricing errors, verification issues, or suspected fraudulent activity.",
+                ]}
+              />
+            </PolicySection>
+
+            <PolicySection number="11" title="Failed Delivery & Unsuccessful Orders">
+              <p>A delivery may be unsuccessful due to:</p>
+
+              <PolicyList
+                items={[
+                  "Incorrect or incomplete delivery addresses.",
+                  "Unreachable customer phone numbers.",
+                  "Customer unavailability at the delivery location.",
+                  "Customer refusal to accept the order.",
+                  "Courier or transportation issues.",
+                ]}
+              />
+
+              <p>
+                Our team or delivery partner may contact the customer to
+                arrange another delivery attempt where available. Additional
+                delivery charges may apply depending on the circumstances.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="12" title="Product Inspection Upon Delivery">
+              <p>
+                Customers are encouraged to check their orders upon receiving
+                them.
+              </p>
+
+              <p>Please verify:</p>
+
+              <PolicyList
+                items={[
+                  "Product name and quantity.",
+                  "Selected size and color.",
+                  "Product condition.",
+                  "Any visible damage or incorrect items.",
+                ]}
+              />
+
+              <p>
+                If you receive a damaged, defective, or incorrect product,
+                please contact our support team within the applicable return
+                and exchange period.
+              </p>
+
+              <p>
+                Please refer to our{" "}
+                <Link
+                  href="/policies/return-policy"
+                  className="font-semibold text-[#087096] underline underline-offset-4 hover:text-[#065873]"
+                >
+                  Return & Exchange Policy
+                </Link>{" "}
+                for complete details.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="13" title="Changes to Orders & Policy Updates">
+              <p>
+                If you need to change your order, such as the size, color,
+                quantity, or delivery address, please contact our support
+                team as soon as possible.
+              </p>
+
+              <PolicyList
+                items={[
+                  "Changes are subject to product availability.",
+                  "Modifications may not be possible after dispatch.",
+                  "Additional charges may apply if the order value or delivery requirements change.",
+                ]}
+              />
+
+              <p>
+                SOZA reserves the right to update this Order Policy when
+                necessary. Any changes will be published on this page with
+                an updated revision date.
+              </p>
+            </PolicySection>
+
+            <PolicySection number="14" title="Contact Us">
+              <p>
+                For questions, order updates, cancellation requests, or
+                delivery assistance, please contact our customer support
+                team.
+              </p>
+
+              <div className="space-y-2 rounded-lg bg-[#F7F7F5] p-5">
+                <p>
+                  <strong className="text-[#202020]">Brand:</strong> SOZA
+                </p>
+                <p>
+                  <strong className="text-[#202020]">Email:</strong>{" "}
+                  <a
+                    href="mailto:almamon757@gmail.com"
+                    className="text-[#087096] hover:underline"
+                  >
+                    almamon757@gmail.com
+                  </a>
+                </p>
+                <p>
+                  <strong className="text-[#202020]">Phone:</strong>{" "}
+                  <a
+                    href="tel:+8801746770324"
+                    className="text-[#087096] hover:underline"
+                  >
+                    +8801746770324
+                  </a>
+                </p>
+                <p>
+                  <strong className="text-[#202020]">Location:</strong>{" "}
+                  Mirpur-1, Dhaka, Bangladesh
+                </p>
+                <p>
+                  <strong className="text-[#202020]">Website:</strong>{" "}
+                  <Link
+                    href="/"
+                    className="text-[#087096] hover:underline"
+                  >
+                    SOZA
+                  </Link>
+                </p>
+              </div>
+            </PolicySection>
+          </div>
+
+          {/* Closing */}
+          <hr className="my-8 border-gray-200" />
+
+          <div className="space-y-3 text-center">
+            <h2 className="text-xl font-bold text-[#087096] sm:text-2xl">
+              SOZA — Wear Your Style. Feel Confident.
+            </h2>
+
+            <p className="text-sm leading-7 text-gray-500">
+              Thank you for choosing SOZA. We appreciate your trust and look
+              forward to providing you with a great shopping experience.
+            </p>
+          </div>
+        </article>
+      </div>
+    </main>
   );
 };
 
-export default page;
+export default OrderPolicyPage;

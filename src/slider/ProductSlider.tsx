@@ -1,82 +1,96 @@
+
 "use client";
+
 import React, { useRef } from "react";
-
-
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import { useWindowSize } from "../hooks/useWindowSize";
+
+// @ts-expect-error Swiper provides this stylesheet at runtime without TypeScript declarations.
+import "swiper/css";
+
 import ProductCard from "../components/products/ProductCard";
 import { TProducts } from "../types";
 
-interface trandingProps {
-  products:TProducts[]
+interface TrendingProps {
+  products: TProducts[];
 }
 
-const ProductSlider:React.FC<trandingProps> = ({ products }) => {
-  const windowWidth = useWindowSize();
+const ProductSlider: React.FC<TrendingProps> = ({ products }) => {
   const swiperRef = useRef<SwiperClass | null>(null);
 
-  console.log("slider page",products)
+  if (!products?.length) return null;
 
-  const showCustomArrows =
-    (windowWidth >= 1024 && products?.length > 4) ||
-    (windowWidth < 1024 && products?.length > 3);
+  const showArrows = products.length > 4;
+
   return (
-    <div className="relative">
-      {showCustomArrows && (
-        <>
-          <div className="absolute hidden lg:block top-2/5  left-6 z-10 transform -translate-y-1/2">
-            <button
-              onClick={() => swiperRef.current?.slidePrev()}
-              className="cursor-pointer text-primary text-2xl"
-            >
-              <SlArrowLeft />
-            </button>
-          </div>
-          <div className="absolute hidden lg:block top-2/5   right-6 z-10 transform -translate-y-1/2">
-            <button
-              onClick={() => swiperRef.current?.slideNext()}
-              className="text-primary text-2xl cursor-pointer"
-            >
-              <SlArrowRight />
-            </button>
-          </div>
-        </>
-      )}
-
+    <div className="group/slider relative">
       <Swiper
-        spaceBetween={8}
         slidesPerView={1.5}
-        loop={true}
-        breakpoints={{
-          640: { slidesPerView: 1.5 },
-          700: { slidesPerView: 1.5 },
-          768: { slidesPerView: 2.5 },
-          1024: { slidesPerView: 4 },
-          1280: { slidesPerView: 4 },
-          1536: { slidesPerView: 4 },
+        spaceBetween={12}
+        speed={650}
+        grabCursor
+        watchOverflow
+        loop={products.length > 4}
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
         }}
-        modules={[Navigation, Pagination]}
-        autoplay={{ delay: 1000, disableOnInteraction: false }}
-        onSwiper={(swiper) => (swiperRef.current = swiper as SwiperClass)}
-        pagination={{ el: ".custom-pagination", clickable: true }}
-        speed={1000}
+        breakpoints={{
+          480: {
+            slidesPerView: 2,
+            spaceBetween: 14,
+          },
+          640: {
+            slidesPerView: 2.5,
+            spaceBetween: 16,
+          },
+          768: {
+            slidesPerView: 3,
+            spaceBetween: 18,
+          },
+          1024: {
+            slidesPerView: 4,
+            spaceBetween: 20,
+          },
+          1280: {
+            slidesPerView: 4,
+            spaceBetween: 22,
+          },
+        }}
+        className="!pb-2"
       >
-        {products?.map((product) => (
+        {products.map((product) => (
           <SwiperSlide
             key={product._id}
-            className="lg:cursor-pointer cursor-grab"
+            className="h-auto"
           >
             <ProductCard product={product} />
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* <div className="custom-pagination flex justify-center gap-2 lg:hidden"></div> */}
+      {/* Navigation */}
+      {showArrows && (
+        <>
+          <button
+            type="button"
+            aria-label="Previous products"
+            onClick={() => swiperRef.current?.slidePrev()}
+            className="absolute left-0 top-[35%] z-20 hidden h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition-all duration-300 hover:scale-110 hover:bg-black hover:text-white lg:flex lg:opacity-0 lg:group-hover/slider:opacity-100"
+          >
+            <ChevronLeft size={21} />
+          </button>
+
+          <button
+            type="button"
+            aria-label="Next products"
+            onClick={() => swiperRef.current?.slideNext()}
+            className="absolute right-0 top-[35%] z-20 hidden h-11 w-11 translate-x-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition-all duration-300 hover:scale-110 hover:bg-black hover:text-white lg:flex lg:opacity-0 lg:group-hover/slider:opacity-100"
+          >
+            <ChevronRight size={21} />
+          </button>
+        </>
+      )}
     </div>
   );
 };
