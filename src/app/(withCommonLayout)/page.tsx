@@ -24,7 +24,7 @@ const page = async () => {
     const {data:blogs} = await getAllBlogs()
     const {data:trending} = await getAllTrendingProducts()
 
-    console.log("-------------trending products------",trending)
+  
     return (
         <div>
            <Banner banners={banners} />

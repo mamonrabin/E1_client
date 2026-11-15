@@ -1,62 +1,65 @@
+
 import React from "react";
-
-
-
-
 import { Metadata } from "next";
-
-
-// import ShippingInfo from "@/utilits/ShippingInfo";
+import { notFound } from "next/navigation";
 
 import PageSection from "@/src/utilits/PageSection";
 import ImageGallery from "@/src/slider/ImageGallery";
-
+import ProductDetails from "@/src/components/products/ProductDetails";
 import ProductInformation from "@/src/components/products/ProductInformation";
 import ReletiveProducts from "@/src/components/products/ReletiveProducts";
 
+import { getProductBySlug } from "@/src/services/products";
 
-// import ProductInformation from "@/components/products/ProductInformation";
-// import ReletiveProducts from "@/components/products/ReletiveProducts";
-
-export const metadata: Metadata = {
-  title: "soza | product",
-  description: "Best E-commerce platform for your business",
-};
-
-import { getProductBySlug } from '@/src/services/products';
-import ProductDetails from "@/src/components/products/ProductDetails";
-
-
-interface slugProps {
+interface SlugProps {
   params: Promise<{
     productSlug: string;
   }>;
 }
 
-const page = async ({ params }: slugProps) => {
-     const resolvedParams = await params;
-      const { data: product } = await getProductBySlug(resolvedParams.productSlug);
-    return (
-        <div>
-      <PageSection second={"Steve Madden Womens Dolly Sandal"} />
+export async function generateMetadata({
+  params,
+}: SlugProps): Promise<Metadata> {
+  const { productSlug } = await params;
+
+  const { data: product } = await getProductBySlug(productSlug);
+
+  return {
+    title: product?.title
+      ? `${product.title} | OQTOS`
+      : "Product | OQTOS",
+    description:
+      product?.description?.slice(0, 160) ||
+      "Explore our latest fashion collection.",
+  };
+}
+
+const Page = async ({ params }: SlugProps) => {
+  const { productSlug } = await params;
+
+  const response = await getProductBySlug(productSlug);
+  const product = response?.data;
+
+  if (!product) {
+    notFound();
+  }
+
+  return (
+    <div>
+      <PageSection second={product.title} />
+
       <div className="Container py-4">
         <div className="grid lg:grid-cols-2 gap-8 py-4">
-          <div className="">
-            <ImageGallery product={product} />
-          </div>
-          <ProductDetails product={product}/>
+          <ImageGallery product={product} />
+          <ProductDetails product={product} />
         </div>
 
-        <div>
-          <ProductInformation details={product.description} />
-        </div>
+        <ProductInformation details={product.description} />
 
-        <div>
-          <ReletiveProducts id={product._id} />
-        </div>
+        <ReletiveProducts id={product._id} />
       </div>
     </div>
-    );
+  );
 };
 
-export default page;
+export default Page;

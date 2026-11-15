@@ -24,70 +24,140 @@ export const getAllProducts = async (params: Record<string, any> = {}) => {
 
 
 
-export const getAllFilterProducts = async (filters: {
-  category?: string;
-  brand?: string;
-  size?: string;
-  colors?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  sortBy?: string;
-  page?: number;
-  limit?: number;
-  searchTerm?: string;
-} = {}) => {
+// export const getAllFilterProducts = async (filters: {
+//   category?: string;
+//   brand?: string;
+//   size?: string;
+//   colors?: string;
+//   minPrice?: number;
+//   maxPrice?: number;
+//   sortBy?: string;
+//   page?: number;
+//   limit?: number;
+//   searchTerm?: string;
+// } = {}) => {
+//   const searchParams = new URLSearchParams();
+
+//   if (filters.category) {
+//     filters.category.split(",").forEach((cat) => {
+//       searchParams.append("category", cat);
+//     });
+//   }
+
+//   if (filters.brand) {
+//     filters.brand.split(",").forEach((brand) => {
+//       searchParams.append("brand", brand);
+//     });
+//   }
+
+//   if (filters.size) {
+//     filters.size.split(",").forEach((size) => {
+//       searchParams.append("size", size);
+//     });
+//   }
+
+//    if (filters.colors) {
+//     filters.colors.split(",").forEach((colors) => {
+//       searchParams.append("colors", colors);
+//     });
+//   }
+
+
+//   if (filters.minPrice !== undefined) {
+//     searchParams.append("minPrice", String(filters.minPrice));
+//   }
+//   if (filters.maxPrice !== undefined) {
+//     searchParams.append("maxPrice", String(filters.maxPrice));
+//   }
+
+//    if (filters.sortBy) {
+//     searchParams.append("sortBy", filters.sortBy); // ✅ added
+//   }
+
+//   if (filters.page) searchParams.append("page", String(filters.page));
+//   if (filters.limit) searchParams.append("limit", String(filters.limit));
+
+//  if (filters.searchTerm) {
+//     searchParams.append("searchTerm", filters.searchTerm); // 🔹 Added here
+//   }
+
+//   const url = `${apiBaseUrl}/product/pagination?${searchParams.toString()}`;
+//   console.log("params", url);
+
+//   const res = await fetch(url, { cache: "no-store" });
+
+//   if (!res.ok) {
+//     throw new Error("Failed to fetch products");
+//   }
+
+//   return res.json();
+// };
+
+
+
+export const getAllFilterProducts = async (
+  filters: {
+    category?: string;
+    brand?: string;
+    size?: string;
+    colors?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: string;
+    page?: number;
+    limit?: number;
+    searchTerm?: string;
+  } = {}
+) => {
   const searchParams = new URLSearchParams();
 
-  if (filters.category) {
-    filters.category.split(",").forEach((cat) => {
-      searchParams.append("category", cat);
-    });
-  }
+  const appendMultiple = (key: string, value?: string) => {
+    if (!value) return;
 
-  if (filters.brand) {
-    filters.brand.split(",").forEach((brand) => {
-      searchParams.append("brand", brand);
-    });
-  }
+    value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .forEach((item) => searchParams.append(key, item));
+  };
 
-  if (filters.size) {
-    filters.size.split(",").forEach((size) => {
-      searchParams.append("size", size);
-    });
-  }
-
-   if (filters.colors) {
-    filters.colors.split(",").forEach((colors) => {
-      searchParams.append("colors", colors);
-    });
-  }
-
+  appendMultiple("category", filters.category);
+  appendMultiple("brand", filters.brand);
+  appendMultiple("size", filters.size);
+  appendMultiple("colors", filters.colors);
 
   if (filters.minPrice !== undefined) {
-    searchParams.append("minPrice", String(filters.minPrice));
+    searchParams.set("minPrice", String(filters.minPrice));
   }
+
   if (filters.maxPrice !== undefined) {
-    searchParams.append("maxPrice", String(filters.maxPrice));
+    searchParams.set("maxPrice", String(filters.maxPrice));
   }
 
-   if (filters.sortBy) {
-    searchParams.append("sortBy", filters.sortBy); // ✅ added
+  if (filters.sortBy) {
+    searchParams.set("sortBy", filters.sortBy);
   }
 
-  if (filters.page) searchParams.append("page", String(filters.page));
-  if (filters.limit) searchParams.append("limit", String(filters.limit));
+  if (filters.page !== undefined) {
+    searchParams.set("page", String(filters.page));
+  }
 
- if (filters.searchTerm) {
-    searchParams.append("searchTerm", filters.searchTerm); // 🔹 Added here
+  if (filters.limit !== undefined) {
+    searchParams.set("limit", String(filters.limit));
+  }
+
+  if (filters.searchTerm?.trim()) {
+    searchParams.set("searchTerm", filters.searchTerm.trim());
   }
 
   const url = `${apiBaseUrl}/product/pagination?${searchParams.toString()}`;
-  console.log("params", url);
 
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch products");
+    throw new Error(`Failed to fetch products: ${res.status}`);
   }
 
   return res.json();

@@ -8,12 +8,17 @@ import { Check, Ruler } from "lucide-react";
 interface ProductSize {
   _id: string;
   title: string;
+  createdAt?: string;
+  updatedAt?: string;
+  slug?: string;
+  __v?: number;
 }
 
 interface ProductColor {
+  _id: string;
   colorName: string;
   colorCode: string;
-  size: ProductSize;
+  size: string | ProductSize;
 }
 
 interface ColorOrSizeFunctionProps {
@@ -31,11 +36,16 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
   selectedSize,
   setSelectedSize,
 }) => {
-  // Group product sizes by color
+  // Normalize size into a string
+  const getSizeTitle = (size: string | ProductSize): string => {
+    return typeof size === "string" ? size : size?.title || "";
+  };
+
+  // Group sizes by color
   const groupedColors = useMemo(() => {
     const grouped: Record<
       string,
-      { colorCode: string; sizes: ProductSize[] }
+      { colorCode: string; sizes: string[] }
     > = {};
 
     colors?.forEach((item) => {
@@ -43,17 +53,18 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
 
       if (!grouped[item.colorName]) {
         grouped[item.colorName] = {
-          colorCode: item.colorCode,
+          colorCode: item.colorCode || "#ffffff",
           sizes: [],
         };
       }
 
-      const alreadyExists = grouped[item.colorName].sizes.some(
-        (size) => size._id === item.size._id
-      );
+      const sizeTitle = getSizeTitle(item.size);
 
-      if (!alreadyExists) {
-        grouped[item.colorName].sizes.push(item.size);
+      if (
+        sizeTitle &&
+        !grouped[item.colorName].sizes.includes(sizeTitle)
+      ) {
+        grouped[item.colorName].sizes.push(sizeTitle);
       }
     });
 
@@ -67,7 +78,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
 
   const availableSizes = groupedColors[selectedColor]?.sizes || [];
 
-  // Set initial color and size
+  // Initialize color and size
   useEffect(() => {
     if (!selectedColor && colorNames.length > 0) {
       const firstColor = colorNames[0];
@@ -76,9 +87,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
 
       const firstSize = groupedColors[firstColor]?.sizes[0];
 
-      if (firstSize) {
-        setSelectedSize(firstSize.title);
-      }
+      setSelectedSize(firstSize || "");
     }
   }, [
     selectedColor,
@@ -88,20 +97,26 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
     setSelectedSize,
   ]);
 
-  // Keep size valid when selected color changes
+  // Validate selected size when color changes
   useEffect(() => {
-    if (!selectedColor || !availableSizes.length) return;
+    if (!selectedColor) return;
 
-    const selectedSizeExists = availableSizes.some(
-      (size) => size.title === selectedSize
-    );
-
-    if (!selectedSizeExists) {
-      setSelectedSize(availableSizes[0].title);
+    if (!availableSizes.length) {
+      if (selectedSize) setSelectedSize("");
+      return;
     }
-  }, [selectedColor, availableSizes, selectedSize, setSelectedSize]);
 
-  // Color selection
+    if (!availableSizes.includes(selectedSize)) {
+      setSelectedSize(availableSizes[0]);
+    }
+  }, [
+    selectedColor,
+    availableSizes,
+    selectedSize,
+    setSelectedSize,
+  ]);
+
+  // Handle color selection
   const handleColorChange = (colorName: string) => {
     if (colorName === selectedColor) return;
 
@@ -109,7 +124,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
 
     const firstSize = groupedColors[colorName]?.sizes[0];
 
-    setSelectedSize(firstSize?.title || "");
+    setSelectedSize(firstSize || "");
   };
 
   // No product options
@@ -125,6 +140,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
 
   return (
     <div className="space-y-6">
+
       {/* COLOR SELECTOR */}
       <div>
         <div className="mb-3 flex items-center justify-between gap-3">
@@ -150,13 +166,15 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
           </div>
 
           <span className="text-[10px] text-gray-400">
-            {colorNames.length} {colorNames.length === 1 ? "Color" : "Colors"}
+            {colorNames.length}{" "}
+            {colorNames.length === 1 ? "Color" : "Colors"}
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {colorNames.map((colorName) => {
             const isSelected = selectedColor === colorName;
+            const colorCode = groupedColors[colorName].colorCode;
 
             return (
               <motion.button
@@ -169,7 +187,6 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
                 title={colorName}
                 className="group relative flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300"
               >
-                {/* Selected ring */}
                 {isSelected && (
                   <motion.span
                     layoutId="selected-color-ring"
@@ -182,17 +199,13 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
                   />
                 )}
 
-                {/* Color circle */}
                 <span
                   className={`h-6 w-6 rounded-full border border-black/10 shadow-sm transition-transform duration-300 group-hover:scale-110 ${
                     isSelected ? "scale-90" : ""
                   }`}
-                  style={{
-                    backgroundColor: groupedColors[colorName].colorCode,
-                  }}
+                  style={{ backgroundColor: colorCode }}
                 />
 
-                {/* Selected check */}
                 {isSelected && (
                   <motion.span
                     initial={{ scale: 0, opacity: 0 }}
@@ -203,7 +216,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
                       size={12}
                       className={
                         ["#ffffff", "#fff", "white"].includes(
-                          groupedColors[colorName].colorCode.toLowerCase()
+                          colorCode.toLowerCase()
                         )
                           ? "text-black"
                           : "text-white drop-shadow-md"
@@ -252,13 +265,13 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
             className="flex flex-wrap gap-2"
           >
             {availableSizes.map((size) => {
-              const isSelected = selectedSize === size.title;
+              const isSelected = selectedSize === size;
 
               return (
                 <motion.button
-                  key={size._id}
+                  key={size}
                   type="button"
-                  onClick={() => setSelectedSize(size.title)}
+                  onClick={() => setSelectedSize(size)}
                   whileTap={{ scale: 0.94 }}
                   aria-pressed={isSelected}
                   className={`relative flex min-w-11 items-center justify-center overflow-hidden rounded-lg border px-4 py-2.5 text-xs font-semibold uppercase transition-all duration-300 ${
@@ -267,7 +280,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
                       : "border-gray-200 bg-white text-gray-600 hover:border-primary hover:text-primary"
                   }`}
                 >
-                  {size.title}
+                  {size}
                 </motion.button>
               );
             })}
@@ -281,7 +294,7 @@ const ColorOrSizeFunction: React.FC<ColorOrSizeFunctionProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* Selection summary */}
+      {/* SELECTION SUMMARY */}
       <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2.5">
         <Check size={14} className="text-primary" />
 

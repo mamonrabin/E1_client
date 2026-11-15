@@ -3,76 +3,94 @@
 
 import { TProducts } from "@/src/types";
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface PriceRangeFilterProps {
   minPrice?: number | null;
   maxPrice?: number | null;
   onMinChange: (min: number) => void;
   onMaxChange: (max: number) => void;
-  products: TProducts[];
+  products?: TProducts[] | null;
 }
 
 export default function PriceRangeFilter({
-  minPrice = 0,
+  minPrice,
   maxPrice,
   onMinChange,
   onMaxChange,
-  products,
+  products = [],
 }: PriceRangeFilterProps) {
+  // Ensure products is always an array.
+  const safeProducts = Array.isArray(products) ? products : [];
+
+  // Calculate maximum product price.
   const calculatedMaxPrice = useMemo(() => {
-    return Math.max(
-      1,
-      ...products.map((product) =>
-        Number(product.price || product.mrpPrice || 0)
-      )
-    );
-  }, [products]);
+    let highest = 1;
 
-  const [min, setMin] = useState(minPrice ?? 0);
-  const [max, setMax] = useState(maxPrice || calculatedMaxPrice);
+    for (const product of safeProducts) {
+      const price = Number(
+        product?.price || product?.mrpPrice || 0
+      );
 
-  // Sync with URL filters.
-  useEffect(() => {
-    setMin(minPrice ?? 0);
-  }, [minPrice]);
-
-  useEffect(() => {
-    setMax(maxPrice || calculatedMaxPrice);
-  }, [maxPrice, calculatedMaxPrice]);
-
-  // Initialize maximum price when no maximum is selected.
-  useEffect(() => {
-    if (!maxPrice && products.length > 0) {
-      setMax(calculatedMaxPrice);
-      onMaxChange(calculatedMaxPrice);
+      if (Number.isFinite(price) && price > highest) {
+        highest = price;
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calculatedMaxPrice, maxPrice]);
 
-  const safeMin = Math.min(min, calculatedMaxPrice);
-  const safeMax = Math.max(safeMin, Math.min(max, calculatedMaxPrice));
+    return highest;
+  }, [safeProducts]);
 
-  const minPercentage = (safeMin / calculatedMaxPrice) * 100;
-  const maxPercentage = (safeMax / calculatedMaxPrice) * 100;
+  // Local state.
+  const [localMin, setLocalMin] = useState<number | null>(null);
+  const [localMax, setLocalMax] = useState<number | null>(null);
 
+  // URL values have priority.
+  const min = minPrice ?? localMin ?? 0;
+
+  const max =
+    maxPrice ??
+    localMax ??
+    calculatedMaxPrice;
+
+  // Prevent invalid ranges.
+  const safeMin = Math.max(
+    0,
+    Math.min(Number(min) || 0, calculatedMaxPrice)
+  );
+
+  const safeMax = Math.max(
+    safeMin,
+    Math.min(
+      Number(max) || calculatedMaxPrice,
+      calculatedMaxPrice
+    )
+  );
+
+  const minPercentage =
+    (safeMin / calculatedMaxPrice) * 100;
+
+  const maxPercentage =
+    (safeMax / calculatedMaxPrice) * 100;
+
+  // Minimum price handler.
   const handleMinChange = (value: number) => {
     const newMin = Math.max(
       0,
       Math.min(value, safeMax)
     );
 
-    setMin(newMin);
+    setLocalMin(newMin);
     onMinChange(newMin);
   };
 
+  // Maximum price handler.
   const handleMaxChange = (value: number) => {
     const newMax = Math.min(
       calculatedMaxPrice,
       Math.max(value, safeMin)
     );
 
-    setMax(newMax);
+    setLocalMax(newMax);
     onMaxChange(newMax);
   };
 
@@ -80,33 +98,37 @@ export default function PriceRangeFilter({
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.2 }}
       className="w-full"
     >
-      {/* Price labels */}
+      {/* Price Labels */}
       <div className="mb-5 flex items-center justify-between">
         <div>
           <p className="text-[11px] uppercase tracking-wider text-gray-400">
             Minimum
           </p>
+
           <p className="mt-1 text-sm font-semibold text-[#202020]">
             ৳{safeMin.toLocaleString("en-BD")}
           </p>
         </div>
 
-        <div className="text-xs text-gray-400">TO</div>
+        <div className="text-xs text-gray-400">
+          TO
+        </div>
 
         <div className="text-right">
           <p className="text-[11px] uppercase tracking-wider text-gray-400">
             Maximum
           </p>
+
           <p className="mt-1 text-sm font-semibold text-[#202020]">
             ৳{safeMax.toLocaleString("en-BD")}
           </p>
         </div>
       </div>
 
-      {/* Dual range slider */}
+      {/* Dual Range Slider */}
       <div className="relative mb-7 mt-6 h-5">
         <div className="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-gray-200" />
 
@@ -118,58 +140,77 @@ export default function PriceRangeFilter({
           }}
         />
 
+        {/* Minimum Slider */}
         <input
           type="range"
           min={0}
           max={calculatedMaxPrice}
           step={1}
           value={safeMin}
-          onChange={(e) => handleMinChange(Number(e.target.value))}
+          onChange={(e) =>
+            handleMinChange(Number(e.target.value))
+          }
           aria-label="Minimum price"
           className="price-range-input absolute inset-0 z-20"
         />
 
+        {/* Maximum Slider */}
         <input
           type="range"
           min={0}
           max={calculatedMaxPrice}
           step={1}
           value={safeMax}
-          onChange={(e) => handleMaxChange(Number(e.target.value))}
+          onChange={(e) =>
+            handleMaxChange(Number(e.target.value))
+          }
           aria-label="Maximum price"
           className="price-range-input absolute inset-0 z-10"
         />
       </div>
 
-      {/* Price inputs */}
+      {/* Manual Price Inputs */}
       <div className="grid grid-cols-2 gap-3">
+        {/* Minimum */}
         <label className="flex items-center gap-2 rounded-sm border border-gray-200 px-3 py-2.5 transition-colors focus-within:border-[#087096]">
-          <span className="text-sm text-gray-400">৳</span>
+          <span className="text-sm text-gray-400">
+            ৳
+          </span>
+
           <input
             type="number"
             min={0}
             max={safeMax}
             value={safeMin}
-            onChange={(e) => handleMinChange(Number(e.target.value))}
+            onChange={(e) =>
+              handleMinChange(Number(e.target.value))
+            }
             aria-label="Minimum price amount"
             className="w-full min-w-0 bg-transparent text-sm font-medium text-[#202020] outline-none"
           />
         </label>
 
+        {/* Maximum */}
         <label className="flex items-center gap-2 rounded-sm border border-gray-200 px-3 py-2.5 transition-colors focus-within:border-[#087096]">
-          <span className="text-sm text-gray-400">৳</span>
+          <span className="text-sm text-gray-400">
+            ৳
+          </span>
+
           <input
             type="number"
             min={safeMin}
             max={calculatedMaxPrice}
             value={safeMax}
-            onChange={(e) => handleMaxChange(Number(e.target.value))}
+            onChange={(e) =>
+              handleMaxChange(Number(e.target.value))
+            }
             aria-label="Maximum price amount"
             className="w-full min-w-0 bg-transparent text-sm font-medium text-[#202020] outline-none"
           />
         </label>
       </div>
 
+      {/* Slider Styling */}
       <style jsx>{`
         .price-range-input {
           width: 100%;

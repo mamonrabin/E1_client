@@ -1,3 +1,4 @@
+
 import ShopPagination from "@/src/components/shop/ShopPagination";
 import ShopProducts from "@/src/components/shop/ShopProducts";
 import ShopSideBar from "@/src/components/shop/ShopSideBar";
@@ -7,17 +8,19 @@ import { getAllColors } from "@/src/services/colors";
 import { getAllFilterProducts } from "@/src/services/products";
 import { getAllSize } from "@/src/services/Size";
 import PageSection from "@/src/utilits/PageSection";
-import React from "react";
 
-const Page = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
-  const params = await Promise.resolve(searchParams);
+interface PageProps {
+  searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
+}
 
-  const normalizeParam = (param: string | string[] | undefined) =>
-    Array.isArray(param) ? param.join(",") : param || "";
+const Page = async ({ searchParams }: PageProps) => {
+  const params = await searchParams;
+
+  const normalizeParam = (
+    param: string | string[] | undefined
+  ) => Array.isArray(param) ? param.join(",") : param || "";
 
   const category = normalizeParam(params.category);
   const brand = normalizeParam(params.brand);
@@ -25,41 +28,58 @@ const Page = async ({
   const size = normalizeParam(params.size);
   const sortBy = normalizeParam(params.sortBy);
 
-  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
-  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
+  const minPrice = params.minPrice
+    ? Number(params.minPrice)
+    : undefined;
 
-  // ✅ Default page = 1, limit = 6
+  const maxPrice = params.maxPrice
+    ? Number(params.maxPrice)
+    : undefined;
 
-  const page = params.page ? Number(params.page) : 1;
-const limit = params.limit ? Number(params.limit) : 6;
+  const page = Math.max(1, Number(params.page) || 1);
+  const limit = Math.max(1, Number(params.limit) || 6);
 
-  const { data: products } = await getAllFilterProducts({
-    category,
-    brand,
-    colors,
-    size,
-    minPrice,
-    maxPrice,
-    sortBy,
-    page,
-    limit,
-  });
+  // Fetch all independent API requests simultaneously
+  const [
+    productsResponse,
+    categoriesResponse,
+    brandsResponse,
+    colorsResponse,
+    sizesResponse,
+  ] = await Promise.all([
+    getAllFilterProducts({
+      category,
+      brand,
+      colors,
+      size,
+      minPrice,
+      maxPrice,
+      sortBy,
+      page,
+      limit,
+    }),
+    getAllCategories(),
+    getAllBrands(),
+    getAllColors(),
+    getAllSize(),
+  ]);
 
-  console.log("meta",products.data)
+  const products = productsResponse.data;
+  const categories = categoriesResponse.data;
+  const brands = brandsResponse.data;
+  const colores = colorsResponse.data;
+  const sizes = sizesResponse.data;
 
-  const { data: categories } = await getAllCategories();
-  const { data: brands } = await getAllBrands();
-  const { data: colores } = await getAllColors();
-  const { data: sizes } = await getAllSize();
-
-  // ✅ fallback if meta.total is missing
-  const total = products.meta?.total ?? products.data.length;
+  const total =
+    productsResponse?.data.meta?.total ?? products.length;
 
   return (
     <div>
       <PageSection second="shop" />
+
       <div className="Container py-6">
         <div className="flex xl:gap-8 gap-4">
+
           {/* Sidebar */}
           <div className="w-1/4 hidden lg:block">
             <ShopSideBar
@@ -67,14 +87,14 @@ const limit = params.limit ? Number(params.limit) : 6;
               brands={brands}
               colores={colores}
               sizes={sizes}
-              products={products.data}
+              products={products}
             />
           </div>
 
           {/* Products */}
           <div className="lg:w-3/4 w-full">
             <ShopProducts
-              products={products.data}
+              products={products}
               category={category}
               brand={brand}
               colors={colors}
@@ -83,18 +103,19 @@ const limit = params.limit ? Number(params.limit) : 6;
               sortBy={sortBy}
               page={page}
               limit={limit}
-
               categories={categories}
               brands={brands}
               colores={colores}
               sizes={sizes}
             />
 
-            <div>
-              {/* ✅ Pagination */}
-              <ShopPagination page={page} limit={limit} total={total} />
-            </div>
+            <ShopPagination
+              page={page}
+              limit={limit}
+              total={total}
+            />
           </div>
+
         </div>
       </div>
     </div>

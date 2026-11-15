@@ -6,7 +6,7 @@ import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
-// @ts-expect-error Swiper provides this stylesheet at runtime without TypeScript declarations.
+
 import "swiper/css";
 
 import ProductCard from "../components/products/ProductCard";

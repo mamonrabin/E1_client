@@ -17,6 +17,6 @@
 export const apiBaseUrl =
   process.env.API_BASE_URL ||
   (process.env.NODE_ENV === "production"
-    ? "http://localhost:8001/api/v1"
-    : "http://localhost:8001/api/v1");
+    ? "https://sozaserver.vercel.app/api/v1"
+    : "https://sozaserver.vercel.app/api/v1");
 

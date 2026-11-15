@@ -17,6 +17,7 @@ import {
   TProducts,
   TSize,
 } from "@/src/types";
+
 import { getAllFilterProducts } from "@/src/services/products";
 
 interface ProductProps {
@@ -35,6 +36,19 @@ interface ProductProps {
   sizes: TSize[];
 }
 
+// Safely extract product arrays from different API response shapes.
+const extractProducts = (response: any): TProducts[] => {
+  const possibleArrays = [
+    response,
+    response?.data,
+    response?.data?.data,
+    response?.data?.products,
+    response?.products,
+  ];
+
+  return possibleArrays.find(Array.isArray) ?? [];
+};
+
 const ShopProducts: React.FC<ProductProps> = ({
   products,
   category,
@@ -51,7 +65,11 @@ const ShopProducts: React.FC<ProductProps> = ({
   sizes,
 }) => {
   const [viewType, setViewType] = useState<"grid" | "row">("grid");
-  const [allProducts, setAllProducts] = useState<TProducts[]>(products);
+
+  const [allProducts, setAllProducts] = useState<TProducts[]>(
+    () => extractProducts(products)
+  );
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -69,14 +87,23 @@ const ShopProducts: React.FC<ProductProps> = ({
         if (category) filters.category = category;
         if (brand) filters.brand = brand;
         if (colors) filters.colors = colors;
-        if (minPrice !== undefined) filters.minPrice = minPrice;
-        if (maxPrice !== undefined) filters.maxPrice = maxPrice;
+
+        if (minPrice !== undefined) {
+          filters.minPrice = minPrice;
+        }
+
+        if (maxPrice !== undefined) {
+          filters.maxPrice = maxPrice;
+        }
+
         if (sortBy) filters.sortBy = sortBy;
 
         const res = await getAllFilterProducts(filters);
 
+        const fetchedProducts = extractProducts(res);
+
         if (isMounted) {
-          setAllProducts(res?.data?.data ?? []);
+          setAllProducts(fetchedProducts);
         }
       } catch (error) {
         console.error("Failed to fetch shop products:", error);
@@ -109,14 +136,14 @@ const ShopProducts: React.FC<ProductProps> = ({
 
   return (
     <section className="w-full">
-      {/* Mobile filters */}
+      {/* Mobile Filters */}
       <div className="mb-5 lg:hidden">
         <ShopResponsiveBar
           categories={categories}
           brands={brands}
           colores={colores}
           sizes={sizes}
-          products={products}
+          products={Array.isArray(products) ? products : []}
         />
       </div>
 
@@ -126,13 +153,14 @@ const ShopProducts: React.FC<ProductProps> = ({
           <h2 className="text-base font-semibold text-[#202020]">
             All Products
           </h2>
+
           <p className="mt-1 text-xs text-gray-500">
             Explore our latest collection
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* View switcher */}
+          {/* View Switcher */}
           <div className="hidden items-center gap-1 rounded-lg border border-gray-200 p-1 sm:flex">
             <button
               type="button"
@@ -167,12 +195,13 @@ const ShopProducts: React.FC<ProductProps> = ({
         </div>
       </div>
 
-      {/* Product content */}
+      {/* Products */}
       <div className="relative min-h-[300px]">
         {loading && (
           <div className="absolute inset-0 z-10 flex items-start justify-center bg-white/60 pt-20 backdrop-blur-[2px]">
             <div className="flex items-center gap-3 rounded-full border border-gray-200 bg-white px-5 py-3 shadow-sm">
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-[#087096]" />
+
               <span className="text-sm font-medium text-gray-600">
                 Updating products...
               </span>
@@ -198,13 +227,19 @@ const ShopProducts: React.FC<ProductProps> = ({
         ) : viewType === "grid" ? (
           <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
             {allProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
+              <ProductCard
+                key={product._id}
+                product={product}
+              />
             ))}
           </div>
         ) : (
-          <div className="mt-5 flex flex-col gap-4">
+          <div className="mt-5 grid grid-cols-2 gap-4">
             {allProducts.map((product) => (
-              <RowProductCard key={product._id} product={product} />
+              <ProductCard
+                key={product._id}
+                product={product}
+              />
             ))}
           </div>
         )}

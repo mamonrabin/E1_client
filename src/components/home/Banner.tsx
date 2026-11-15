@@ -7,9 +7,9 @@ import { motion, AnimatePresence, easeOut, easeIn } from "framer-motion";
 import { TBanners } from "@/src/types";
 import { apiBaseUrl } from "@/src/config/config";
 
-// @ts-expect-error: Swiper CSS imports are handled by the bundler.
+
 import "swiper/css";
-// @ts-expect-error: Swiper CSS imports are handled by the bundler.
+
 import "swiper/css/effect-fade";
 
 interface BannerProps {
